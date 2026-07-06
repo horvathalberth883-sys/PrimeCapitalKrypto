@@ -1387,7 +1387,7 @@ document.addEventListener('click', function(e) {
 });
 
 /* ── BALANCE ─────────────────────────────────────────────── */
-var currentBalance = 9800.00;
+var currentBalance = 10800.00;
 var transactions = [];
 
 function fmtBalance(n) {
@@ -1401,7 +1401,7 @@ function updateBalanceDisplay() {
   if (lbl) lbl.textContent = fmtBalance(currentBalance) + ' EUR';
 
   // Limit display — remaining = currentBalance / LIMIT * 100
-  var LIMIT = 9800.00;
+  var LIMIT = 10800.00;
   var pct = Math.round((currentBalance / LIMIT) * 100);
   pct = Math.max(0, Math.min(100, pct));
 
