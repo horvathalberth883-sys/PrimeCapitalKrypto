@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PrimeCapital — Partnerský program</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="description" content="PrimeCapital — partnerský program prémiového štandardu. Viac ako 12 800 aktívnych klientov, vyplatených €2,4M+, licencia EÚ a ocenenie №1 podľa European Finance Awards.">
+  <meta name="keywords" content="PrimeCapital, partnerský program, investície, kapitál, finančné riešenia, EÚ licencia, VIP podmienky">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="PrimeCapital — Partnerský program prémiového štandardu">
+  <meta property="og:description" content="Viac ako 12 800 klientov nám zverilo správu svojho kapitálu. Exkluzívne podmienky, okamžité výplaty, podpora 24/7. Voľba №1 v Strednej Európe.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#C9A84C">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #080808;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .gold { color: #C9A84C; }
+    .gold-light { color: #E8C96A; }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(160deg, #0f0f0f 0%, #0a0a0a 60%, #111008 100%);
+      border-bottom: 1px solid #C9A84C33;
+      padding: 48px 40px 52px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60px; left: 50%;
+      transform: translateX(-50%);
+      width: 500px; height: 200px;
+      background: radial-gradient(ellipse, #C9A84C18 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 36px;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #C9A84C, #8B6914);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px; font-weight: 700;
+      color: #fff; letter-spacing: 0.5px;
+    }
+    .logo-text span { color: #C9A84C; }
+
+    .badge-verified {
+      display: flex; align-items: center; gap: 7px;
+      background: linear-gradient(135deg, #1a1508, #231c09);
+      border: 1px solid #C9A84C55;
+      border-radius: 24px;
+      padding: 7px 16px;
+      font-size: 12px; font-weight: 600;
+      color: #C9A84C; letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    .badge-verified i { font-size: 14px; }
+
+    .hero-center { text-align: center; }
+    .hero-pretitle {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: #C9A84C; margin-bottom: 16px;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+    }
+    .hero-pretitle::before, .hero-pretitle::after {
+      content: ''; width: 40px; height: 1px;
+      background: linear-gradient(90deg, transparent, #C9A84C77);
+    }
+    .hero-pretitle::after { background: linear-gradient(90deg, #C9A84C77, transparent); }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 46px; font-weight: 800;
+      line-height: 1.1; color: #fff;
+      margin-bottom: 18px; letter-spacing: -1px;
+    }
+    .hero-title .gold-line {
+      background: linear-gradient(90deg, #C9A84C, #F0D882, #C9A84C);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 15px; color: #888;
+      line-height: 1.65; max-width: 460px;
+      margin: 0 auto 32px;
+    }
+    .hero-badges {
+      display: flex; justify-content: center;
+      gap: 10px; flex-wrap: wrap; margin-bottom: 12px;
+    }
+    .hb {
+      display: flex; align-items: center; gap: 6px;
+      background: #0f0f0f; border: 1px solid #2a2a2a;
+      border-radius: 20px; padding: 7px 14px;
+      font-size: 12px; color: #aaa; font-weight: 500;
+    }
+    .hb i { color: #C9A84C; font-size: 14px; }
+
+    /* ── STATS ROW ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+      background: #0a0a0a;
+    }
+    .stat-cell {
+      padding: 28px 16px; text-align: center;
+      border-right: 1px solid #1a1a1a;
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px; font-weight: 700;
+      color: #C9A84C; margin-bottom: 4px;
+    }
+    .stat-lbl {
+      font-size: 11px; color: #555;
+      text-transform: uppercase; letter-spacing: 1.5px;
+    }
+
+    /* ── TRUST SECTION ── */
+    .trust-section { padding: 44px 40px; background: #080808; }
+    .section-header { text-align: center; margin-bottom: 32px; }
+    .section-tag {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: #C9A84C88; margin-bottom: 10px;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px; font-weight: 700; color: #fff;
+    }
+    .trust-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+    }
+    .trust-card {
+      background: #0f0f0f; border: 1px solid #1e1e1e;
+      border-radius: 16px; padding: 24px 20px;
+      position: relative; overflow: hidden;
+    }
+    .trust-card::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, #C9A84C, transparent);
+    }
+    .trust-card.featured {
+      border-color: #C9A84C44;
+      background: linear-gradient(145deg, #100e04, #0f0f0f);
+    }
+    .tc-icon {
+      width: 42px; height: 42px; border-radius: 10px;
+      background: #1a1608; border: 1px solid #C9A84C33;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 14px; font-size: 20px; color: #C9A84C;
+    }
+    .tc-badge {
+      position: absolute; top: 16px; right: 16px;
+      font-size: 10px; font-weight: 700;
+      background: #C9A84C; color: #0a0a0a;
+      padding: 3px 10px; border-radius: 20px;
+      letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .tc-title { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+    .tc-sub { font-size: 12px; color: #555; line-height: 1.55; }
+
+    /* ── #1 BANNER ── */
+    .n1-banner {
+      margin: 0 40px;
+      background: linear-gradient(135deg, #1a1407 0%, #130f04 50%, #1a1407 100%);
+      border: 1px solid #C9A84C44;
+      border-radius: 20px; padding: 32px 36px;
+      display: flex; align-items: center; gap: 28px;
+      position: relative; overflow: hidden;
+    }
+    .n1-banner::before {
+      content: '';
+      position: absolute; right: -30px; top: -30px;
+      width: 180px; height: 180px; border-radius: 50%;
+      background: radial-gradient(ellipse, #C9A84C0d 0%, transparent 70%);
+    }
+    .n1-crown { font-size: 56px; flex-shrink: 0; filter: drop-shadow(0 0 16px #C9A84C55); }
+    .n1-content { flex: 1; }
+    .n1-tag {
+      font-size: 10px; font-weight: 700; letter-spacing: 3px;
+      color: #C9A84C; text-transform: uppercase; margin-bottom: 8px;
+    }
+    .n1-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px; font-weight: 700; color: #fff; margin-bottom: 8px;
+    }
+    .n1-sub { font-size: 13px; color: #666; }
+    .n1-seal {
+      flex-shrink: 0; width: 88px; height: 88px; border-radius: 50%;
+      background: linear-gradient(135deg, #C9A84C, #8B6914);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+    }
+    .n1-seal-top { font-size: 10px; font-weight: 700; color: #0a0a0a; letter-spacing: 1px; }
+    .n1-seal-big { font-size: 24px; font-weight: 800; color: #0a0a0a; line-height: 1; }
+    .n1-seal-bot { font-size: 9px; font-weight: 600; color: #3a2a00; letter-spacing: 0.5px; }
+
+    /* ── REVIEWS ── */
+    .reviews-section { padding: 44px 40px; background: #050505; }
+    .reviews-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .review-card {
+      background: #0c0c0c; border: 1px solid #1c1c1c;
+      border-radius: 16px; padding: 22px 20px;
+    }
+    .review-card.highlighted {
+      border-color: #C9A84C33;
+      background: linear-gradient(145deg, #0f0d04, #0c0c0c);
+    }
+    .rv-top { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .rv-avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 15px; flex-shrink: 0;
+    }
+    .rv-name { font-size: 14px; font-weight: 600; color: #ddd; margin-bottom: 2px; }
+    .rv-role { font-size: 11px; color: #555; }
+    .rv-verified {
+      margin-left: auto;
+      font-size: 10px; font-weight: 600; color: #C9A84C;
+      background: #1a1608; border: 1px solid #C9A84C44;
+      padding: 3px 10px; border-radius: 12px;
+      display: flex; align-items: center; gap: 4px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .rv-stars { color: #C9A84C; font-size: 13px; margin-bottom: 10px; }
+    .rv-text { font-size: 13px; color: #666; line-height: 1.6; }
+    .rv-text strong { color: #aaa; font-weight: 500; }
+
+    /* ── GOLD DIVIDER ── */
+    .gold-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, #C9A84C55 50%, transparent 100%);
+      margin: 0 40px;
+    }
+    .spacer { height: 32px; }
+
+    /* ── BOTTOM CTA BANNER ── */
+    .bottom-banner {
+      margin: 0 40px 40px;
+      background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%);
+      border-radius: 20px;
+      padding: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .bottom-banner::before {
+      content: '';
+      position: absolute; left: -40px; top: -40px;
+      width: 220px; height: 220px; border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .bottom-banner::after {
+      content: '';
+      position: absolute; right: -20px; bottom: -20px;
+      width: 160px; height: 160px; border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(0,0,0,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .bb-left { position: relative; z-index: 1; flex: 1; }
+    .bb-eyebrow {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: rgba(10,10,10,0.55);
+      margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .bb-eyebrow::before {
+      content: '';
+      display: inline-block; width: 28px; height: 1px;
+      background: rgba(10,10,10,0.3);
+    }
+    .bb-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px; font-weight: 800;
+      color: #0a0a0a; margin-bottom: 10px;
+      line-height: 1.15; letter-spacing: -0.5px;
+    }
+    .bb-subtitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px; font-weight: 700;
+      color: rgba(10,10,10,0.75);
+      margin-bottom: 16px; font-style: italic;
+    }
+    .bb-sub { font-size: 13px; color: rgba(10,10,10,0.55); line-height: 1.6; max-width: 420px; }
+
+    /* The CTA button — prominent on all devices */
+    .bb-right {
+      position: relative; z-index: 1;
+      flex-shrink: 0; text-align: center;
+    }
+    .bb-btn {
+      background: #0a0a0a;
+      color: #C9A84C;
+      font-weight: 700; font-size: 16px;
+      padding: 20px 40px;
+      border-radius: 14px;
+      white-space: nowrap;
+      border: none; cursor: pointer;
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; letter-spacing: 0.3px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    .bb-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+    .bb-btn i { font-size: 18px; }
+    .bb-btn-note {
+      font-size: 11px; color: rgba(10,10,10,0.45);
+      margin-top: 10px; letter-spacing: 0.3px;
+    }
+
+    /* ── HERO INLINE CTA ── */
+    .hero-cta-block {
+      margin-top: 28px;
+      max-width: 580px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hcta-inner {
+      background: linear-gradient(135deg, #C9A84C 0%, #a07a28 60%, #8B6914 100%);
+      border-radius: 18px;
+      padding: 24px 28px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(201,168,76,0.25), 0 0 0 1px rgba(201,168,76,0.3);
+    }
+    .hcta-inner::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4) 50%, transparent);
+    }
+    .hcta-inner::after {
+      content: '';
+      position: absolute; bottom: -50px; right: -50px;
+      width: 160px; height: 160px; border-radius: 50%;
+      background: rgba(255,255,255,0.05); pointer-events: none;
+    }
+    .hcta-left { flex: 1; position: relative; z-index: 1; text-align: left; }
+    .hcta-tag {
+      font-size: 9px; font-weight: 700; letter-spacing: 2.5px;
+      color: rgba(10,10,10,0.5); text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .hcta-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px; font-weight: 800; line-height: 1.2;
+      color: #0a0a0a; margin-bottom: 3px;
+    }
+    .hcta-sub {
+      font-size: 13px; color: rgba(10,10,10,0.6);
+      margin-bottom: 6px;
+    }
+    .hcta-desc {
+      font-size: 11.5px; color: rgba(10,10,10,0.55); line-height: 1.5;
+    }
+    .hcta-right { flex-shrink: 0; text-align: center; position: relative; z-index: 1; }
+    .hcta-btn {
+      display: flex; align-items: center; gap: 8px;
+      background: #0a0a0a; color: #C9A84C;
+      border: none; border-radius: 12px;
+      padding: 14px 22px;
+      font-size: 14px; font-weight: 800; font-family: inherit;
+      text-decoration: none; white-space: nowrap;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      transition: background 0.18s, transform 0.1s, box-shadow 0.18s;
+    }
+    .hcta-btn:hover { background: #151515; box-shadow: 0 6px 22px rgba(0,0,0,0.5); transform: translateY(-1px); }
+    .hcta-btn:active { transform: scale(0.98); }
+    .hcta-secure {
+      font-size: 10px; color: rgba(10,10,10,0.4);
+      margin-top: 8px; letter-spacing: 0.3px;
+    }
+
+    @media (max-width: 600px) {
+      .hcta-inner { flex-direction: column; align-items: stretch; gap: 18px; padding: 20px 20px; }
+      .hcta-title { font-size: 18px; }
+      .hcta-btn { justify-content: center; width: 100%; font-size: 15px; padding: 15px; }
+    }
+
+    /* ── SCROLL-IN ANIMATIONS ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-28px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(28px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.92);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .reveal-scale.visible { opacity: 1; transform: scale(1); }
+
+    /* ── HERO AMBIENT PARTICLES ── */
+    .hero-particles {
+      position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: #C9A84C;
+      border-radius: 50%;
+      opacity: 0;
+      animation: float-particle var(--dur, 8s) var(--delay, 0s) ease-in-out infinite;
+    }
+    @keyframes float-particle {
+      0%   { opacity: 0; transform: translate(0, 0) scale(0.5); }
+      20%  { opacity: 0.7; }
+      80%  { opacity: 0.3; }
+      100% { opacity: 0; transform: translate(var(--tx, 30px), var(--ty, -80px)) scale(1.5); }
+    }
+
+    /* ── HERO TITLE SHIMMER ── */
+    .gold-line {
+      background: linear-gradient(90deg, #C9A84C 0%, #F0D882 40%, #C9A84C 60%, #F0D882 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 4s linear infinite;
+    }
+    @keyframes shimmer {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+
+    /* ── STAT CELL HOVER ── */
+    .stat-cell {
+      transition: background 0.3s;
+      cursor: default;
+    }
+    .stat-cell:hover { background: #0f0f0f; }
+    .stat-cell:hover .stat-num {
+      text-shadow: 0 0 20px rgba(201,168,76,0.5);
+    }
+    .stat-num { transition: text-shadow 0.3s; }
+
+    /* ── TRUST CARD HOVER ── */
+    .trust-card {
+      transition: transform 0.25s ease, border-color 0.25s, box-shadow 0.25s;
+    }
+    .trust-card:hover {
+      transform: translateY(-4px);
+      border-color: #C9A84C55;
+      box-shadow: 0 8px 32px rgba(201,168,76,0.08);
+    }
+
+    /* ── LOGO PULSE ── */
+    .logo-icon {
+      animation: logo-pulse 3s ease-in-out infinite;
+    }
+    @keyframes logo-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0); }
+      50% { box-shadow: 0 0 0 6px rgba(201,168,76,0.15); }
+    }
+
+    /* ── BADGE VERIFIED GLOW ── */
+    .badge-verified {
+      animation: badge-glow 3.5s ease-in-out infinite;
+    }
+    @keyframes badge-glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0); }
+      50% { box-shadow: 0 0 12px rgba(201,168,76,0.2); }
+    }
+
+    /* ── N1 SEAL ROTATE ── */
+    .n1-seal {
+      transition: transform 0.4s ease;
+    }
+    .n1-banner:hover .n1-seal {
+      transform: rotate(8deg) scale(1.08);
+    }
+    .n1-crown {
+      animation: crown-float 3s ease-in-out infinite;
+    }
+    @keyframes crown-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* ── CTA BUTTON PULSE ── */
+    .hcta-btn, .bb-btn {
+      position: relative;
+    }
+    .hcta-btn::after {
+      content: '';
+      position: absolute; inset: -3px;
+      border-radius: 14px;
+      background: transparent;
+      box-shadow: 0 0 0 0 rgba(201,168,76,0.5);
+      animation: cta-ring 2.5s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes cta-ring {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0.4); }
+      50% { box-shadow: 0 0 0 7px rgba(201,168,76,0); }
+    }
+
+    /* ── REVIEWS CAROUSEL ── */
+    .reviews-section { overflow: hidden; }
+    .reviews-carousel-wrap {
+      position: relative;
+      overflow: hidden;
+      margin: 0 -40px;
+      padding: 8px 0 16px;
+    }
+    .reviews-track {
+      display: flex;
+      gap: 14px;
+      width: max-content;
+      animation: scroll-left 28s linear infinite;
+      padding: 0 40px;
+    }
+    .reviews-track:hover { animation-play-state: paused; }
+    @keyframes scroll-left {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(calc(-50% - 7px)); }
+    }
+    .reviews-carousel-wrap::before,
+    .reviews-carousel-wrap::after {
+      content: '';
+      position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2;
+      pointer-events: none;
+    }
+    .reviews-carousel-wrap::before {
+      left: 0;
+      background: linear-gradient(90deg, #050505, transparent);
+    }
+    .reviews-carousel-wrap::after {
+      right: 0;
+      background: linear-gradient(270deg, #050505, transparent);
+    }
+    .review-card {
+      min-width: 300px; max-width: 300px;
+      flex-shrink: 0;
+      transition: transform 0.25s ease, border-color 0.25s, box-shadow 0.25s;
+    }
+    .review-card:hover {
+      transform: translateY(-4px);
+      border-color: #C9A84C44;
+      box-shadow: 0 8px 28px rgba(201,168,76,0.1);
+    }
+    .rv-stars {
+      letter-spacing: 2px;
+      animation: none;
+    }
+
+    /* ── GOLD DIVIDER ANIMATION ── */
+    .gold-divider {
+      animation: divider-glow 4s ease-in-out infinite;
+    }
+    @keyframes divider-glow {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* ── SECTION HEADER REVEAL ── */
+    .section-header { overflow: hidden; }
+
+    /* ── HB (hero badge) hover ── */
+    .hb {
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+      cursor: default;
+    }
+    .hb:hover {
+      border-color: #C9A84C44;
+      background: #141409;
+      transform: translateY(-2px);
+    }
+
+    /* ── TC ICON hover spin ── */
+    .trust-card:hover .tc-icon i {
+      animation: icon-spin 0.5s ease;
+    }
+    @keyframes icon-spin {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(-15deg) scale(1.15); }
+      100% { transform: rotate(0deg) scale(1); }
+    }
+
+    /* ── LOADER OVERLAY ── */
+    #loader-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(5,5,5,0.92);
+      backdrop-filter: blur(6px);
+      z-index: 9999;
+      align-items: center; justify-content: center;
+    }
+    #loader-overlay.active { display: flex; }
+    .loader-box {
+      background: linear-gradient(160deg, #111008 0%, #0f0f0f 100%);
+      border: 1px solid #C9A84C44;
+      border-radius: 22px;
+      padding: 40px 44px 36px;
+      text-align: center;
+      max-width: 320px; width: 90%;
+      box-shadow: 0 0 0 1px #C9A84C0d, 0 40px 80px rgba(0,0,0,0.8);
+      position: relative; overflow: hidden;
+    }
+    .loader-box::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent 0%, #C9A84C 30%, #F0D882 60%, transparent 100%);
+    }
+    .loader-ring-wrap {
+      position: relative; width: 72px; height: 72px; margin: 0 auto 22px;
+    }
+    .loader-ring {
+      width: 72px; height: 72px; border-radius: 50%;
+      border: 2.5px solid #1e1e1e;
+      border-top-color: #C9A84C; border-right-color: #E8C96A44;
+      animation: lspin 0.9s cubic-bezier(0.6,0,0.4,1) infinite;
+    }
+    .loader-ring-inner {
+      position: absolute; top: 10px; left: 10px;
+      width: 52px; height: 52px; border-radius: 50%;
+      border: 2px solid #141414; border-bottom-color: #8B6914;
+      animation: lspin 1.3s cubic-bezier(0.6,0,0.4,1) infinite reverse;
+    }
+    .loader-icon-center {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      font-size: 22px; color: #C9A84C;
+    }
+    .loader-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px; font-weight: 800; color: #D4D4D4; margin-bottom: 6px;
+    }
+    .loader-sub { font-size: 12.5px; color: #666; line-height: 1.6; margin-bottom: 22px; }
+    .loader-steps { display: flex; flex-direction: column; gap: 10px; text-align: left; }
+    .loader-step {
+      display: flex; align-items: center; gap: 11px;
+      font-size: 12px; color: #888; transition: color 0.4s;
+    }
+    .loader-step.done { color: #C9A84C; }
+    .loader-step.active { color: #D4D4D4; }
+    .loader-step-dot {
+      width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+      background: #1a1a1a; border: 1.5px solid #2a2a2a;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; color: #555; transition: all 0.4s;
+    }
+    .loader-step.done .loader-step-dot { background: #1a1407; border-color: #C9A84C88; color: #C9A84C; }
+    .loader-step.active .loader-step-dot {
+      background: #1a1407; border-color: #C9A84C;
+      animation: pdot 1s ease-in-out infinite;
+    }
+    .loader-bar-wrap { margin-top: 20px; background: #1a1a1a; border-radius: 6px; height: 4px; overflow: hidden; }
+    .loader-bar-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #8B6914, #C9A84C, #E8C96A);
+      border-radius: 6px;
+      transition: width 0.35s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 0 0 8px rgba(201,168,76,0.5);
+    }
+    @keyframes lspin { to { transform: rotate(360deg); } }
+    @keyframes pdot {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0.4); }
+      50% { box-shadow: 0 0 0 4px rgba(201,168,76,0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero { padding: 36px 24px 44px; }
+      .hero-title { font-size: 38px; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .stat-cell { padding: 22px 12px; }
+      .stat-num { font-size: 24px; }
+      .trust-section, .reviews-section { padding: 40px 24px; }
+      .trust-grid { grid-template-columns: repeat(2, 1fr); }
+      .reviews-grid { grid-template-columns: 1fr; }
+      .n1-banner { margin: 0 24px; padding: 28px 24px; }
+      .gold-divider { margin: 0 24px; }
+      .bottom-banner { margin: 0 24px 32px; padding: 36px 28px; flex-direction: column; align-items: stretch; gap: 28px; }
+      .bb-title { font-size: 26px; }
+      .bb-subtitle { font-size: 18px; }
+      .bb-right { text-align: center; }
+      .bb-btn { justify-content: center; font-size: 18px; padding: 22px 36px; width: 100%; }
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 28px 18px 36px; }
+      .hero-top { flex-direction: column; gap: 14px; text-align: center; }
+      .hero-title { font-size: 30px; letter-spacing: -0.5px; }
+      .hero-sub { font-size: 14px; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .stat-num { font-size: 22px; }
+      .stat-lbl { font-size: 10px; letter-spacing: 1px; }
+      .trust-section, .reviews-section { padding: 32px 18px; }
+      .trust-grid { grid-template-columns: 1fr; }
+      .section-title { font-size: 22px; }
+      .n1-banner { margin: 0 18px; flex-direction: column; text-align: center; gap: 20px; padding: 24px 20px; }
+      .n1-crown { font-size: 44px; }
+      .n1-title { font-size: 20px; }
+      .gold-divider { margin: 0 18px; }
+      .bottom-banner { margin: 0 18px 28px; padding: 28px 22px; }
+      .bb-title { font-size: 22px; }
+      .bb-subtitle { font-size: 16px; }
+      .bb-sub { font-size: 13px; }
+      /* Big prominent button on mobile */
+      .bb-btn {
+        font-size: 17px;
+        padding: 22px 28px;
+        border-radius: 16px;
+        box-shadow: 0 6px 28px rgba(0,0,0,0.5), 0 0 0 2px rgba(201,168,76,0.2);
+        letter-spacing: 0.2px;
+      }
+      .bb-btn-note { font-size: 12px; margin-top: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-particles" id="heroParticles"></div>
+    <div class="hero-top">
+      <div class="logo">
+        <div class="logo-icon">♛</div>
+        <div class="logo-text">Prime<span>Capital</span></div>
+      </div>
+      <div class="badge-verified">
+        <i class="ti ti-shield-check" aria-hidden="true"></i>
+        Overené · Licencia EÚ
+      </div>
+    </div>
+    <div class="hero-center">
+      <div class="hero-pretitle">Partnerský program</div>
+      <div class="hero-title">
+        Finančné riešenia<br>
+        <span class="gold-line">prémiového štandardu</span>
+      </div>
+      <div class="hero-sub">
+        Viac ako 12 000 klientov nám zverilo správu svojho kapitálu. Pripojte sa k lídrom trhu a získajte prístup k exkluzívnym nástrojom.
+      </div>
+      <div class="hero-badges">
+        <div class="hb"><i class="ti ti-shield-check" aria-hidden="true"></i> Licencia EÚ</div>
+        <div class="hb"><i class="ti ti-award" aria-hidden="true"></i> TOP-1 Rating 2024</div>
+        <div class="hb"><i class="ti ti-lock" aria-hidden="true"></i> 256-bitové šifrovanie</div>
+        <div class="hb"><i class="ti ti-clock" aria-hidden="true"></i> Podpora 24/7</div>
+      </div>
+
+      <!-- INLINE CTA under badges -->
+      <div class="hero-cta-block">
+        <div class="hcta-inner">
+          <div class="hcta-left">
+            <div class="hcta-tag">— PRVÝ KROK K ÚSPECHU</div>
+            <div class="hcta-title">Pripravení začať?<br>Pridajte sa dnes.</div>
+            <div class="hcta-sub"><em>Overenie totožnosti</em></div>
+            <p class="hcta-desc">Bezpečné overenie za menej ako 3 minúty. Okamžitý prístup k vášmu portfóliu.</p>
+          </div>
+          <div class="hcta-right">
+            <a href="totoznost.html" class="hcta-btn" onclick="showLoader(event, this.href)">
+              <i class="ti ti-id-badge-2" style="font-size:18px;"></i>
+              Overiť totožnosť &nbsp;→
+            </a>
+            <div class="hcta-secure">Zabezpečené · Šifrované · GDPR</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-cell">
+      <div class="stat-num" data-count="2.4" data-prefix="€" data-suffix="M+">€2.4M+</div>
+      <div class="stat-lbl">Vyplatené klientom</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num" data-count="12800" data-suffix="">12 800</div>
+      <div class="stat-lbl">Aktívnych klientov</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num" data-count="98.7" data-suffix="%">98.7%</div>
+      <div class="stat-lbl">Úspešných operácií</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num" data-count="7" data-suffix=" rokov">7 rokov</div>
+      <div class="stat-lbl">Na trhu</div>
+    </div>
+  </div>
+
+  <!-- TRUST FEATURES -->
+  <div class="trust-section">
+    <div class="section-header reveal">
+      <div class="section-tag">Prečo si vybrať nás</div>
+      <div class="section-title">Štandardy <span class="gold">najvyššej úrovne</span></div>
+    </div>
+    <div class="trust-grid">
+      <div class="trust-card featured reveal" style="transition-delay:0.05s">
+        <div class="tc-badge">№1 Voľba</div>
+        <div class="tc-icon"><i class="ti ti-crown" aria-hidden="true"></i></div>
+        <div class="tc-title">Líder trhu</div>
+        <div class="tc-sub">Uznávaný partner č. 1 podľa ocenenia European Finance Awards 3 roky po sebe</div>
+      </div>
+      <div class="trust-card reveal" style="transition-delay:0.12s">
+        <div class="tc-icon"><i class="ti ti-shield-check" aria-hidden="true"></i></div>
+        <div class="tc-title">Úplná verifikácia</div>
+        <div class="tc-sub">Každý partner prechádza viacúrovňovou kontrolou KYC/AML podľa štandardov EÚ</div>
+      </div>
+      <div class="trust-card reveal" style="transition-delay:0.19s">
+        <div class="tc-icon"><i class="ti ti-chart-line" aria-hidden="true"></i></div>
+        <div class="tc-title">Transparentná analytika</div>
+        <div class="tc-sub">Reporty v reálnom čase, prístup k dashboardu 24/7 bez skrytých poplatkov</div>
+      </div>
+      <div class="trust-card reveal" style="transition-delay:0.26s">
+        <div class="tc-badge">Exkluzívne</div>
+        <div class="tc-icon"><i class="ti ti-diamond" aria-hidden="true"></i></div>
+        <div class="tc-title">VIP podmienky</div>
+        <div class="tc-sub">Osobný manažér, prioritné výplaty a exkluzívne partnerské bonusy</div>
+      </div>
+      <div class="trust-card reveal" style="transition-delay:0.33s">
+        <div class="tc-icon"><i class="ti ti-clock-24" aria-hidden="true"></i></div>
+        <div class="tc-title">Okamžité výplaty</div>
+        <div class="tc-sub">Výber prostriedkov do 24 hodín. Pracujeme so SEPA, SWIFT aj kryptom</div>
+      </div>
+      <div class="trust-card reveal" style="transition-delay:0.40s">
+        <div class="tc-icon"><i class="ti ti-certificate" aria-hidden="true"></i></div>
+        <div class="tc-title">Certifikovaní</div>
+        <div class="tc-sub">ISO 27001, PCI DSS Level 1, GDPR compliant. Vaše dáta sú v bezpečí</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NUMBER 1 BANNER -->
+  <div class="n1-banner reveal-scale">
+    <div class="n1-crown">👑</div>
+    <div class="n1-content">
+      <div class="n1-tag">Oficiálne uznanie</div>
+      <div class="n1-title">Voľba č. 1 medzi partnermi <span class="gold">Strednej Európy</span></div>
+      <div class="n1-sub">Podľa výsledkov nezávislého ratingu FinTech Europe 2024 — viac ako 4 800 hlasov</div>
+    </div>
+    <div class="n1-seal">
+      <div class="n1-seal-top">VOĽBA</div>
+      <div class="n1-seal-big">#1</div>
+      <div class="n1-seal-bot">2024</div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <!-- REVIEWS -->
+  <div class="reviews-section">
+    <div class="section-header reveal">
+      <div class="section-tag">Skutočné recenzie</div>
+      <div class="section-title">Odporúčajú nás <span class="gold">klienti</span></div>
+    </div>
+    <div class="reviews-carousel-wrap">
+      <div class="reviews-track" id="reviewsTrack">
+        <!-- Original 4 cards -->
+        <div class="review-card highlighted">
+          <div class="rv-top">
+            <div class="rv-avatar" style="background:#1a1608; color:#C9A84C;">MV</div>
+            <div>
+              <div class="rv-name">Michail Voronov</div>
+              <div class="rv-role">Podnikateľ, Praha</div>
+            </div>
+            <div class="rv-verified"><i class="ti ti-circle-check" aria-hidden="true"></i> Overený</div>
+          </div>
+          <div class="rv-stars">★★★★★</div>
+          <div class="rv-text">S PrimeCapital spolupracujem už <strong>2 roky</strong>. Výplaty chodia presne načas, osobný manažér je vždy k dispozícii. Je to <strong>jediná platforma</strong>, ktorú odporúčam kolegom.</div>
+        </div>
+        <div class="review-card">
+          <div class="rv-top">
+            <div class="rv-avatar" style="background:#08100a; color:#4caf70;">АК</div>
+            <div>
+              <div class="rv-name">Anna Kováčová</div>
+              <div class="rv-role">Investičná analytička, Bratislava</div>
+            </div>
+            <div class="rv-verified"><i class="ti ti-circle-check" aria-hidden="true"></i> Overená</div>
+          </div>
+          <div class="rv-stars">★★★★★</div>
+          <div class="rv-text">Transparentnosť práce je na najvyššej úrovni. <strong>Dashboard zobrazuje</strong> všetky operácie v reálnom čase. Za 8 mesiacov ani jedno oneskorenie — na trhu výnimočné.</div>
+        </div>
+        <div class="review-card">
+          <div class="rv-top">
+            <div class="rv-avatar" style="background:#08080f; color:#7c6af0;">JN</div>
+            <div>
+              <div class="rv-name">Jakub Novák</div>
+              <div class="rv-role">CEO, FinStart s.r.o., Viedeň</div>
+            </div>
+            <div class="rv-verified"><i class="ti ti-circle-check" aria-hidden="true"></i> Overený</div>
+          </div>
+          <div class="rv-stars">★★★★★</div>
+          <div class="rv-text">Pripojil som 40+ klientov cez partnerský kanál. <strong>Konverzia a podmienky</strong> — najlepšie na trhu. Tím podpory reaguje za minúty, nie za hodiny.</div>
+        </div>
+        <div class="review-card highlighted">
+          <div class="rv-top">
+            <div class="rv-avatar" style="background:#0f0808; color:#e06060;">ES</div>
+            <div>
+              <div class="rv-name">Elena Svobodová</div>
+              <div class="rv-role">Finančná poradkyňa, Budapešť</div>
+            </div>
+            <div class="rv-verified"><i class="ti ti-circle-check" aria-hidden="true"></i> Overená</div>
+          </div>
+          <div class="rv-stars">★★★★★</div>
+          <div class="rv-text">Pred tým som skúšala 5 platforiem. PrimeCapital je <strong>jediná</strong>, kde podmienky zodpovedajú tomu, čo je napísané na stránke. Odporúčam bez výhrad.</div>
+        </div>
+        <div class="review-card">
+          <div class="rv-top">
+            <div class="rv-avatar" style="background:#080f14; color:#4aacdf;">PT</div>
+            <div>
+              <div class="rv-name">Peter Tóth</div>
+              <div class="rv-role">Investor, Košice</div>
+            </div>
+            <div class="rv-verified"><i class="ti ti-circle-check" aria-hidden="true"></i> Overený</div>
+          </div>
+          <div class="rv-stars">★★★★★</div>
+          <div class="rv-text">Výborná platforma s profesionálnym prístupom. <strong>Osobný manažér</strong> mi pomohol nastaviť portfólio presne podľa mojich potrieb. Výsledky hovoria samy za seba.</div>
+        </div>
+        <div class="review-card highlighted">
+          <div class="rv-top">
+            <div class="rv-avatar" style="background:#120808; color:#df9a4a;">LH</div>
+            <div>
+              <div class="rv-name">Lucia Horáková</div>
+              <div class="rv-role">Finančná manažérka, Brno</div>
+            </div>
+            <div class="rv-verified"><i class="ti ti-circle-check" aria-hidden="true"></i> Overená</div>
+          </div>
+          <div class="rv-stars">★★★★★</div>
+          <div class="rv-text">Od prvého dňa som cítila, že som v dobrých rukách. <strong>Transparentnosť a rýchlosť</strong> výplat sú na úrovni, akú som v tomto odvetví ešte nezažila.</div>
+        </div>
+        <div class="review-card">
+          <div class="rv-top">
+            <div class="rv-avatar" style="background:#090f09; color:#5ec26a;">MK</div>
+            <div>
+              <div class="rv-name">Martin Krajčí</div>
+              <div class="rv-role">Podnikateľ, Žilina</div>
+            </div>
+            <div class="rv-verified"><i class="ti ti-circle-check" aria-hidden="true"></i> Overený</div>
+          </div>
+          <div class="rv-stars">★★★★★</div>
+          <div class="rv-text">PrimeCapital zmenila môj pohľad na investovanie. <strong>Reálne výnosy</strong>, žiadne skryté poplatky a podpora, ktorá vždy odpovie do pár minút.</div>
+        </div>
+        <!-- Duplicate set for seamless loop -->
+        <div class="review-card highlighted">
+          <div class="rv-top">
+            <div class="rv-avatar" style="background:#1a1608; color:#C9A84C;">MV</div>
+            <div>
+              <div class="rv-name">Michail Voronov</div>
+              <div class="rv-role">Podnikateľ, Praha</div>
+            </div>
+            <div class="rv-verified"><i class="ti ti-circle-check" aria-hidden="true"></i> Overený</div>
+          </div>
+          <div class="rv-stars">★★★★★</div>
+          <div class="rv-text">S PrimeCapital spolupracujem už <strong>2 roky</strong>. Výplaty chodia presne načas, osobný manažér je vždy k dispozícii. Je to <strong>jediná platforma</strong>, ktorú odporúčam kolegom.</div>
+        </div>
+        <div class="review-card">
+          <div class="rv-top">
+            <div class="rv-avatar" style="background:#08100a; color:#4caf70;">АК</div>
+            <div>
+              <div class="rv-name">Anna Kováčová</div>
+              <div class="rv-role">Investičná analytička, Bratislava</div>
+            </div>
+            <div class="rv-verified"><i class="ti ti-circle-check" aria-hidden="true"></i> Overená</div>
+          </div>
+          <div class="rv-stars">★★★★★</div>
+          <div class="rv-text">Transparentnosť práce je na najvyššej úrovni. <strong>Dashboard zobrazuje</strong> všetky operácie v reálnom čase. Za 8 mesiacov ani jedno oneskorenie — na trhu výnimočné.</div>
+        </div>
+        <div class="review-card">
+          <div class="rv-top">
+            <div class="rv-avatar" style="background:#08080f; color:#7c6af0;">JN</div>
+            <div>
+              <div class="rv-name">Jakub Novák</div>
+              <div class="rv-role">CEO, FinStart s.r.o., Viedeň</div>
+            </div>
+            <div class="rv-verified"><i class="ti ti-circle-check" aria-hidden="true"></i> Overený</div>
+          </div>
+          <div class="rv-stars">★★★★★</div>
+          <div class="rv-text">Pripojil som 40+ klientov cez partnerský kanál. <strong>Konverzia a podmienky</strong> — najlepšie na trhu. Tím podpory reaguje za minúty, nie za hodiny.</div>
+        </div>
+        <div class="review-card highlighted">
+          <div class="rv-top">
+            <div class="rv-avatar" style="background:#0f0808; color:#e06060;">ES</div>
+            <div>
+              <div class="rv-name">Elena Svobodová</div>
+              <div class="rv-role">Finančná poradkyňa, Budapešť</div>
+            </div>
+            <div class="rv-verified"><i class="ti ti-circle-check" aria-hidden="true"></i> Overená</div>
+          </div>
+          <div class="rv-stars">★★★★★</div>
+          <div class="rv-text">Pred tým som skúšala 5 platforiem. PrimeCapital je <strong>jediná</strong>, kde podmienky zodpovedajú tomu, čo je napísané na stránke. Odporúčam bez výhrad.</div>
+        </div>
+        <div class="review-card">
+          <div class="rv-top">
+            <div class="rv-avatar" style="background:#080f14; color:#4aacdf;">PT</div>
+            <div>
+              <div class="rv-name">Peter Tóth</div>
+              <div class="rv-role">Investor, Košice</div>
+            </div>
+            <div class="rv-verified"><i class="ti ti-circle-check" aria-hidden="true"></i> Overený</div>
+          </div>
+          <div class="rv-stars">★★★★★</div>
+          <div class="rv-text">Výborná platforma s profesionálnym prístupom. <strong>Osobný manažér</strong> mi pomohol nastaviť portfólio presne podľa mojich potrieb. Výsledky hovoria samy za seba.</div>
+        </div>
+        <div class="review-card highlighted">
+          <div class="rv-top">
+            <div class="rv-avatar" style="background:#120808; color:#df9a4a;">LH</div>
+            <div>
+              <div class="rv-name">Lucia Horáková</div>
+              <div class="rv-role">Finančná manažérka, Brno</div>
+            </div>
+            <div class="rv-verified"><i class="ti ti-circle-check" aria-hidden="true"></i> Overená</div>
+          </div>
+          <div class="rv-stars">★★★★★</div>
+          <div class="rv-text">Od prvého dňa som cítila, že som v dobrých rukách. <strong>Transparentnosť a rýchlosť</strong> výplat sú na úrovni, akú som v tomto odvetví ešte nezažila.</div>
+        </div>
+        <div class="review-card">
+          <div class="rv-top">
+            <div class="rv-avatar" style="background:#090f09; color:#5ec26a;">MK</div>
+            <div>
+              <div class="rv-name">Martin Krajčí</div>
+              <div class="rv-role">Podnikateľ, Žilina</div>
+            </div>
+            <div class="rv-verified"><i class="ti ti-circle-check" aria-hidden="true"></i> Overený</div>
+          </div>
+          <div class="rv-stars">★★★★★</div>
+          <div class="rv-text">PrimeCapital zmenila môj pohľad na investovanie. <strong>Reálne výnosy</strong>, žiadne skryté poplatky a podpora, ktorá vždy odpovie do pár minút.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+  <!-- LOADER OVERLAY -->
+  <div id="loader-overlay">
+    <div class="loader-box">
+      <div class="loader-ring-wrap">
+        <div class="loader-ring"></div>
+        <div class="loader-ring-inner"></div>
+        <i class="ti ti-shield-check loader-icon-center"></i>
+      </div>
+      <div class="loader-title">Overujem totožnosť</div>
+      <div class="loader-sub">Bezpečné spracovanie…</div>
+      <div class="loader-steps">
+        <div class="loader-step" id="lstep1"><div class="loader-step-dot" id="ldot1">1</div><span>Šifrovanie údajov (SSL/TLS)</span></div>
+        <div class="loader-step" id="lstep2"><div class="loader-step-dot" id="ldot2">2</div><span>Overenie identity</span></div>
+        <div class="loader-step" id="lstep3"><div class="loader-step-dot" id="ldot3">3</div><span>Pridelenie manažéra</span></div>
+      </div>
+      <div class="loader-bar-wrap"><div class="loader-bar-fill" id="lbar"></div></div>
+    </div>
+  </div>
+
+  <script>
+    /* ── LOADER ── */
+    function showLoader(e, href) {
+      e.preventDefault();
+      document.getElementById('loader-overlay').classList.add('active');
+      var lbar = document.getElementById('lbar');
+      var steps = [
+        { s: document.getElementById('lstep1'), d: document.getElementById('ldot1') },
+        { s: document.getElementById('lstep2'), d: document.getElementById('ldot2') },
+        { s: document.getElementById('lstep3'), d: document.getElementById('ldot3') }
+      ];
+      var timeline = [
+        { pct: 0,   ai: 0, di: [] },
+        { pct: 33,  ai: 1, di: [0] },
+        { pct: 66,  ai: 2, di: [0,1] },
+        { pct: 100, ai: -1, di: [0,1,2] }
+      ];
+      var t = 0;
+      function run() {
+        if (t >= timeline.length) { window.location.href = href; return; }
+        var f = timeline[t++];
+        lbar.style.width = f.pct + '%';
+        steps.forEach(function(s, i) { s.s.classList.remove('active','done'); s.d.textContent = i+1; });
+        f.di.forEach(function(i) { steps[i].s.classList.add('done'); steps[i].d.textContent = '✓'; });
+        if (f.ai >= 0) steps[f.ai].s.classList.add('active');
+        setTimeout(run, t === 1 ? 350 : t === 4 ? 450 : 850);
+      }
+      setTimeout(run, 150);
+    }
+
+    /* ── HERO PARTICLES ── */
+    (function() {
+      var container = document.getElementById('heroParticles');
+      if (!container) return;
+      var count = 22;
+      for (var i = 0; i < count; i++) {
+        var p = document.createElement('div');
+        p.className = 'particle';
+        var x = Math.random() * 100;
+        var y = 30 + Math.random() * 70;
+        var tx = (Math.random() - 0.5) * 80;
+        var ty = -(40 + Math.random() * 100);
+        var dur = 5 + Math.random() * 7;
+        var delay = Math.random() * 8;
+        var size = 1 + Math.random() * 2.5;
+        p.style.cssText = [
+          'left:' + x + '%',
+          'top:' + y + '%',
+          '--tx:' + tx + 'px',
+          '--ty:' + ty + 'px',
+          '--dur:' + dur + 's',
+          '--delay:' + delay + 's',
+          'width:' + size + 'px',
+          'height:' + size + 'px',
+          'animation-delay:' + delay + 's'
+        ].join(';');
+        container.appendChild(p);
+      }
+    })();
+
+    /* ── SCROLL REVEAL ── */
+    (function() {
+      var selectors = '.reveal, .reveal-left, .reveal-right, .reveal-scale';
+      var els = document.querySelectorAll(selectors);
+      if (!els.length) return;
+
+      function check() {
+        var wh = window.innerHeight;
+        els.forEach(function(el) {
+          var rect = el.getBoundingClientRect();
+          if (rect.top < wh - 60) {
+            el.classList.add('visible');
+          }
+        });
+      }
+      window.addEventListener('scroll', check, { passive: true });
+      setTimeout(check, 120);
+    })();
+
+    /* ── ANIMATED COUNTERS ── */
+    (function() {
+      var counters = document.querySelectorAll('.stat-num[data-count]');
+      var done = false;
+
+      function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+      function animateCounter(el) {
+        var target = parseFloat(el.dataset.count);
+        var prefix = el.dataset.prefix || '';
+        var suffix = el.dataset.suffix || '';
+        var isFloat = String(target).includes('.');
+        var duration = 1400;
+        var start = null;
+
+        function step(ts) {
+          if (!start) start = ts;
+          var progress = Math.min((ts - start) / duration, 1);
+          var val = easeOut(progress) * target;
+          if (isFloat) {
+            el.textContent = prefix + val.toFixed(1) + suffix;
+          } else {
+            var rounded = Math.floor(val);
+            el.textContent = prefix + rounded.toLocaleString('sk-SK').replace(/\s/g, ' ') + suffix;
+          }
+          if (progress < 1) requestAnimationFrame(step);
+          else el.textContent = prefix + (isFloat ? target.toFixed(1) : target.toLocaleString('sk-SK').replace(/\s/g, ' ')) + suffix;
+        }
+        requestAnimationFrame(step);
+      }
+
+      function tryStart() {
+        if (done) return;
+        var statsRow = document.querySelector('.stats-row');
+        if (!statsRow) return;
+        var rect = statsRow.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 40) {
+          done = true;
+          counters.forEach(animateCounter);
+        }
+      }
+      window.addEventListener('scroll', tryStart, { passive: true });
+      setTimeout(tryStart, 300);
+    })();
+
+    /* ── REDUCED MOTION: disable carousel & particles ── */
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      var track = document.getElementById('reviewsTrack');
+      if (track) track.style.animation = 'none';
+      var particles = document.getElementById('heroParticles');
+      if (particles) particles.style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>

