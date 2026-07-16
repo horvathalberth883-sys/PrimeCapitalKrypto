@@ -507,7 +507,6 @@
     function updateInfoBox(code) {
       const infoText = document.getElementById('info-text');
       if (code && managerCodes[code]) {
-        infoText.innerHTML = `<strong>${managerCodes[code]}</strong><br>Tvoj osobný manažér`;
       } else {
         infoText.innerHTML = `<strong>Kde nájdem Kód manažéra?</strong><br>Pri obnove prístupu k vášmu účtu vám Kód manažéra poskytne váš osobný manažér. V przypadku otázok kontaktujte podporu.`;
       }
