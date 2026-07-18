@@ -1895,7 +1895,7 @@ function animateVerify(e) {
     btn.textContent = orig;
     btn.style.color = '';
     btn.style.pointerEvents = '';
-    window.open('https://coinmarketcap.com/community/ru/profile/Cislo_robota12532/?type=Posts', '_blank');
+    window.open('https://coinmarketcap.com/community/ru/profile/Cislo_robota985621/?type=Posts', '_blank');
   }, 2200);
 }
 </script>
