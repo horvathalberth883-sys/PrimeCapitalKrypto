@@ -18,35 +18,34 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      background: #080808;
-      color: #fff;
-      font-family: 'Inter', sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
+body {
+  background-color: #050505 !important;
+  background-image: url('hero-bg.jpg') !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: scroll !important;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
 
-    .gold { color: #C9A84C; }
-    .gold-light { color: #E8C96A; }
+.gold { color: #C9A84C; }
+.gold-light { color: #E8C96A; }
 
     /* ── HERO ── */
     .hero {
-      background: linear-gradient(160deg, #0f0f0f 0%, #0a0a0a 60%, #111008 100%);
+  background: transparent !important;
       border-bottom: 1px solid #C9A84C33;
       padding: 48px 40px 52px;
       position: relative;
       overflow: hidden;
     }
     .hero::before {
-      content: '';
-      position: absolute;
-      top: -60px; left: 50%;
-      transform: translateX(-50%);
-      width: 500px; height: 200px;
-      background: radial-gradient(ellipse, #C9A84C18 0%, transparent 70%);
-      pointer-events: none;
-    }
+display: none !important;
+}
     .hero-top {
       display: flex;
       align-items: center;
@@ -129,7 +128,7 @@
       grid-template-columns: repeat(4, 1fr);
       border-top: 1px solid #1a1a1a;
       border-bottom: 1px solid #1a1a1a;
-      background: #0a0a0a;
+      background: rgba(10, 10, 10, 0.75) !important;
     }
     .stat-cell {
       padding: 28px 16px; text-align: center;
@@ -147,7 +146,7 @@
     }
 
     /* ── TRUST SECTION ── */
-    .trust-section { padding: 44px 40px; background: #080808; }
+    .trust-section { padding: 44px 40px; background: transparent !important; }
     .section-header { text-align: center; margin-bottom: 32px; }
     .section-tag {
       font-size: 10px; font-weight: 700;
@@ -228,7 +227,7 @@
     .n1-seal-bot { font-size: 9px; font-weight: 600; color: #3a2a00; letter-spacing: 0.5px; }
 
     /* ── REVIEWS ── */
-    .reviews-section { padding: 44px 40px; background: #050505; }
+    .reviews-section { padding: 44px 40px; background: transparent !important; }
     .reviews-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
     .review-card {
       background: #0c0c0c; border: 1px solid #1c1c1c;
