@@ -20,6 +20,29 @@
     }
   </script>
   <style>
+/* ===== ПРИМУСОВИЙ ФОН ===== */
+html, body {
+  background-color: #050505 !important;
+  background-image: url('hero-bg.jpg') !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: scroll !important;
+}
+
+.topbar {
+  background: rgba(15, 15, 15, 0.85) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+.form-section {
+  background: transparent !important;
+}
+
+.page-footer,
+.outer-note {
+  background: rgba(5, 5, 5, 0.8) !important;
+}
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     @keyframes pageFadeIn {
@@ -44,15 +67,20 @@
     }
 
     body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: #fff;
-      min-height: 100vh;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-      display: flex;
-      flex-direction: column;
-    }
+  font-family: 'Inter', sans-serif;
+  background-color: #050505 !important;
+  background-image: url('hero-bg.jpg') !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: scroll !important;
+  color: #fff;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+}
 
     .gold-grad {
       background: linear-gradient(90deg, #C9A84C, #F0D882, #C9A84C);
@@ -63,7 +91,8 @@
 
     /* ══ TOP NAV BAR ══ */
     .topbar {
-      background: linear-gradient(160deg, #0f0f0f 0%, #0a0a0a 60%, #111008 100%);
+  background: rgba(15, 15, 15, 0.85) !important;
+  backdrop-filter: blur(12px);
       border-bottom: 1px solid #C9A84C22;
       padding: 18px 40px;
       display: flex;
@@ -102,9 +131,6 @@
 
     /* ══ FORM SECTION ══ */
     .form-section {
-      flex: 1;
-      padding: 56px 40px 72px;
-      background: linear-gradient(180deg, #050505 0%, #080808 100%);
       display: flex;
       align-items: flex-start;
       justify-content: center;
