@@ -12,6 +12,27 @@
   --border-strong: rgba(201,168,76,.35);
 }
 
+/* ===== CRYPTO BACKGROUND ===== */
+body {
+  background-color: #050505 !important;
+  background-image: url('hero-bg.jpg') !important;
+  background-size: cover !important;
+  background-position: center top !important;
+  background-repeat: no-repeat !important;
+  background-attachment: scroll !important;
+  min-height: 100vh;
+}
+
+.grid-bg {
+  display: none !important;
+}
+
+.email-card {
+  background: rgba(15, 15, 15, 0.93) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
 /* ─── RESET & BASE ─────────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -23,7 +44,6 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-  background: #080808;
   color: #C9A84C;
   min-height: 100vh;
   padding: 48px 0 64px;
@@ -89,7 +109,9 @@ body {
 
 /* ─── EMAIL CARD ────────────────────────────────────────────── */
 .email-card {
-  background: #0f0f0f;
+  background: rgba(15, 15, 15, 0.93) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-radius: 22px;
   overflow: hidden;
   border: 1px solid #1e1e1e;
