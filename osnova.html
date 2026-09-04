@@ -1446,7 +1446,7 @@ function updateBalanceDisplay() {
   if (lbl) lbl.textContent = fmtBalance(currentBalance) + ' EUR';
 
   // Limit display — remaining = currentBalance / LIMIT * 100
-  var LIMIT = 9800.00;
+  var LIMIT = 12000.00;
   var pct = Math.round((currentBalance / LIMIT) * 100);
   pct = Math.max(0, Math.min(100, pct));
 
