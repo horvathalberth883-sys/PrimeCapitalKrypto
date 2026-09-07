@@ -1432,7 +1432,7 @@ document.addEventListener('click', function(e) {
 });
 
 /* ── BALANCE ─────────────────────────────────────────────── */
-var currentBalance = 12000.00;
+var currentBalance = 13500.00;
 var transactions = [];
 
 function fmtBalance(n) {
@@ -1446,7 +1446,7 @@ function updateBalanceDisplay() {
   if (lbl) lbl.textContent = fmtBalance(currentBalance) + ' EUR';
 
   // Limit display — remaining = currentBalance / LIMIT * 100
-  var LIMIT = 12000.00;
+  var LIMIT = 13500.00;
   var pct = Math.round((currentBalance / LIMIT) * 100);
   pct = Math.max(0, Math.min(100, pct));
 
@@ -1558,7 +1558,7 @@ function handleWithdraw() {
     var now = new Date();
     var dateStr = now.getDate() + '. ' + ['januára','februára','marca','apríla','mája','júna','júla','augusta','septembra','októbra','novembra','decembra'][now.getMonth()] + ' ' + now.getFullYear() + ', ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
     var txId = Date.now();
-    transactions.unshift({ bank: selectedBank, amount: amount, date: dateStr, status: 'processing', id: txId, timerEnd: Date.now() + 120000 });
+    transactions.unshift({ bank: selectedBank, amount: amount, date: dateStr, status: 'processing', id: txId, timerEnd: Date.now() + 135000 });
 
     var txSection = document.getElementById('tx-section');
     if (txSection) txSection.style.display = 'block';
